@@ -30,3 +30,6 @@ import IMGjoin from '../../assets/images/img-join.webp'
         </div>
     </div>
 </template>
+
+<style scoped>
+</style>

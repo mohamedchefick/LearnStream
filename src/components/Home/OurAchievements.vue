@@ -62,3 +62,6 @@ import utilisateurs from '../../assets/icons/utilisateurs.svg'
     </div>
   </div>
 </template>
+
+<style scoped>
+</style>

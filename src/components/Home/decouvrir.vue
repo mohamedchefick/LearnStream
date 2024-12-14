@@ -1,3 +1,7 @@
+<template>
+
+</template>
+
 <script setup>
 import star from '../../assets/icons/star.svg'
 import profil from '../../assets/icons/profil.svg'
@@ -81,3 +85,8 @@ const courses = [
         </div>
     </div>
 </template>
+
+</script>
+
+<style scoped>
+</style>
