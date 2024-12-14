@@ -17,7 +17,7 @@
           <div
               v-for="(testimonial, index) in testimonials"
               :key="index"
-              class="w-full flex-shrink-0 px-4"
+              class="w-1/2 flex-shrink-0 px-4"
           >
               <div class="bg-white border rounded-lg shadow-md p-6">
               <!-- Contenu -->
@@ -70,7 +70,7 @@
             <!-- Bouton précédent -->
             <button
                 @click="prevSlide"
-                class="absolute right-10 bg-white shadow-md rounded-full p-2 hover:bg-gray-100 transition"
+                class="absolute right-20 bg-white shadow-md rounded-lg p-2 hover:bg-gray-100 transition hover:scale-105 transition-transform duration-300"
             >
                 <img :src="Precedent" alt="Précédent" class="w-5 h-5" />
             </button>
@@ -78,7 +78,7 @@
             <!-- Bouton suivant -->
             <button
                 @click="nextSlide"
-                class="absolute right-0 bg-[#0056D2] shadow-md rounded-full p-2 hover:bg-gray-100 transition"
+                class="absolute right-10 bg-[#0056D2] shadow-md rounded-lg p-2  transition hover:scale-105 transition-transform duration-300"
             >
                 <img :src="Suivant" alt="Suivant" class="w-5 h-5" />
             </button>
