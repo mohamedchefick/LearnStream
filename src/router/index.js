@@ -1,9 +1,9 @@
-// import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/home/index.vue';
 
 const routes = [
   {
-    path: '/Jojo',
+    path: '/',
     name: 'Home',
     component: Home
   },
