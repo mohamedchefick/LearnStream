@@ -4,7 +4,7 @@ import ImgHero from '../../assets/images/img-hero.webp';
 </script>
 
 <template>
-  <main class="bg-white h-screen">
+  <main class="bg-white">
     <!-- Header -->
     <div>
       <Header />
@@ -17,7 +17,7 @@ import ImgHero from '../../assets/images/img-hero.webp';
         <p class="text-[#C1C806] text-lg sm:text-xl font-semibold mb-4 w-full sm:w-3/4">
           Accédez à une bibliothèque de vidéos éducatives gratuites, adaptées à vos besoins
         </p>
-        <p class="text-[#0056D2] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-4 leading-normal">
+        <p class="text-[#0056D2] text-3xl sm:text-4xl font-extrabold mb-4 leading-normal">
             Votre apprentissage, simplifié et accessible.
         </p>
         <p class="text-[#031C41] text-base sm:text-lg mb-8 leading-relaxed w-full sm:w-3/4">
@@ -30,11 +30,16 @@ import ImgHero from '../../assets/images/img-hero.webp';
         </div>
       </div>
 
-<!-- Image à droite -->
-<div class="lg:w-1/2 h-4/5 w-full flex items-center justify-center mt-6 lg:-mt-10">
-  <img src="/src/assets/images/img-hero.webp" alt="Hero Image" class="w-full sm:w-2/3 lg:w-full h-auto object-cover rounded-lg" />
-</div>
-
+        <!-- Image à droite -->
+      <div
+        class="lg:w-1/2 w-full flex items-center justify-center lg:mt-0 mt-6"
+      >
+        <img
+          src="/src/assets/images/img-hero.webp"
+          alt="Hero Image"
+          class="max-w-full lg:max-w-[80%] h-auto object-contain rounded-lg"
+        />
+      </div>
     </div>
   </main>
 </template>
