@@ -1,13 +1,12 @@
 <script setup>
 import Hero from './hero.vue';
 import Plateforme from './plateforme.vue';
-import Categories from './Categories.vue';
+import Categories from './categories.vue';
 import Temoignage from './temoignage.vue';
 import Decouvrir from './decouvrir.vue';
 import OurAchievements from './OurAchievements.vue';
 import Rejoin from './rejoigne.vue'
 import Footer from '../Helper/Footer/index.vue'
-import Rejoigne from './rejoigne.vue';
 </script>
 
 <template>
@@ -16,19 +15,16 @@ import Rejoigne from './rejoigne.vue';
         <!--  -->
         <Decouvrir/>
         <!--  -->
-        <OurAchievements/>
-        <!--  -->
-        <Rejoin/>
-        <!--  -->
-        <Footer/>
         <Plateforme />
         <!--  -->
         <Categories />
         <!--  -->
-        <OurAchievements />
-        <!--  -->
-        <Rejoigne/>
+        <OurAchievements/>
         <!--  -->
         <Temoignage />
+        <!--  -->
+        <Rejoin/>
+        <!--  -->
+        <Footer/>
     </div>
 </template>
