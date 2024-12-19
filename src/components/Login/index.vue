@@ -1,7 +1,10 @@
 <script setup>
+import Login from './login.vue';
 
 </script>
 
 <template>
-    <div class=""></div>
+    <div class="">
+        <Login />
+    </div>
 </template>

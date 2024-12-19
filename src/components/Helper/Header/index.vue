@@ -89,11 +89,13 @@ const closeMenu = () => {
       </nav>
 
       <!-- Inscription Button -->
-      <button
+      <router-link
+        to="/connexion"
         class="bg-[#0056D2] px-6 py-3 rounded-full text-white text-base font-semibold hover:bg-[#003d99] transition duration-200 lg:flex hidden"
       >
-        S’inscrire
-      </button>
+        Connexion
+      </router-link>
+
     </div>
 
     <!-- Mobile Menu -->
@@ -135,11 +137,12 @@ const closeMenu = () => {
       >
         Forum
       </a>
-      <button
-        class="bg-[#0056D2] px-10 py-3 rounded-full text-white text-lg font-semibold hover:bg-[#003d99] transition duration-200"
+      <router-link
+        to="/connexion"
+        class="bg-[#0056D2] px-6 py-3 rounded-full text-white text-base font-semibold hover:bg-[#003d99] transition duration-200 lg:flex hidden"
       >
-        S’inscrire
-      </button>
+        Connexion
+      </router-link>
     </div>
   </main>
 </template>

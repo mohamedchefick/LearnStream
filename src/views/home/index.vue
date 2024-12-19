@@ -3,9 +3,9 @@ import Home from '../../components/Home/index.vue';
 </script>
 
 <template>
-<div class="">
-  <Home/>
-</div>
+  <div class="">
+    <Home/>
+  </div>
 </template>
 
 <style scoped>
