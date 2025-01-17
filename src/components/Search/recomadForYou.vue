@@ -5,6 +5,8 @@ import imgDecouvrir2 from '../../assets/images/img-categorie2.webp'
 import imgDecouvrir3 from '../../assets/images/img-categorie3.webp'
 import Precedent from '../../assets/icons/precedent.svg';
 import Suivant from '../../assets/icons/suivant.svg';
+import star from '../../assets/icons/star.svg'
+
 
 const courses = [
     {
@@ -42,7 +44,7 @@ const courses = [
         </div>
         <!--  -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 xl:gap-14 py-10">
-            <div 
+                <div 
                 v-for="(item, index) in courses" 
                 :key="index" 
                 class="bg-white rounded-3xl shadow-2xl hover:-translate-x-1 hover:-translate-y-1 duration-200 p-1"
@@ -64,6 +66,7 @@ const courses = [
                 </div>
             </div>
         </div>
+
         <!--  -->
         <div class="flex justify-between w-1/3 ">
             <!-- Bouton précédent -->

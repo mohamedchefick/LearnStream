@@ -9,6 +9,7 @@ import profil from '../../assets/icons/profil.svg'
 import Precedent from '../../assets/icons/precedent.svg';
 import Suivant from '../../assets/icons/suivant.svg';
 
+
 const courses = [
     {
         img: imgDecouvrir1,

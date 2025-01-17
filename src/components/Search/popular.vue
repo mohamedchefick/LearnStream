@@ -106,6 +106,8 @@ const courses = [
             </div>
         </div>
                 <!--  -->
+                <router-link to="/detailscours">
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-14 py-10">
             <div 
                 v-for="(item, index) in courses" 
@@ -129,6 +131,7 @@ const courses = [
                 </div>
             </div>
         </div>
+        </router-link>
         <!--  -->
     </div>
 </template>
