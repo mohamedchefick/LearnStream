@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import IMGLogo from "../../../assets/images/img-logo.webp"
+import Searsh from "../../../assets/icons/iconSearsh2.svg"
 
 const showMenu = ref(false);
 const toggleMenu = () => {
@@ -12,12 +13,12 @@ const closeMenu = () => {
 </script>
 
 <template>
-  <main class=" lg:border  fixed top-0 left-0 z-50 w-full bg-white mb-10">
+  <main class=" lg:border  fixed top-0 left-0 z-50 w-full bg-white mb-10 shadow-2xl">
     <div class="lg:container px-8 lg:px-3 lg:mx-auto py-6 flex items-center justify-between">
       <!-- Logo -->
       <div class="">
         <router-link to="/">
-          <img :src="IMGLogo" class="w-52" alt="IMGLogo">
+          <img :src="IMGLogo" class="w-28 h-12" alt="IMGLogo">
         </router-link>
       </div>
 
@@ -63,16 +64,16 @@ const closeMenu = () => {
 
       <!-- Desktop Navigation -->
       <nav class="hidden lg:flex items-center gap-8 xl:gap-16 text-base text-[#031C41] xl:ms-8 font-normal justify-between">
+        <router-link to="/"
+            class="relative cursor-pointer transition duration-300 before:content-[''] before:absolute before:w-0 before:h-[2px] before:bottom-0 before:left-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full"
+          >
+          Accueil
+          </router-link>
           <router-link to="/videocatalog"
             class="relative cursor-pointer transition duration-300 before:content-[''] before:absolute before:w-0 before:h-[2px] before:bottom-0 before:left-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full"
           >
-            Catalogue de vidéos
+          Cours
           </router-link>
-          <a
-            class="relative cursor-pointer transition duration-300 before:content-[''] before:absolute before:w-0 before:h-[2px] before:bottom-0 before:left-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full"
-          >
-            Quiz
-          </a>
           <a
             class="relative cursor-pointer transition duration-300 before:content-[''] before:absolute before:w-0 before:h-[2px] before:bottom-0 before:left-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full"
           >
@@ -83,11 +84,9 @@ const closeMenu = () => {
           >
             Forum
           </a>
-          <a
-            class="relative cursor-pointer transition duration-300 before:content-[''] before:absolute before:w-0 before:h-[2px] before:bottom-0 before:left-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full"
-          >
-            À propos de nous
-          </a>
+          <router-link to="/Search">
+            <img :src="Searsh" alt="">
+          </router-link>
       </nav>
 
       <!-- Inscription Button -->
@@ -113,18 +112,19 @@ const closeMenu = () => {
       </button>
 
       <!-- Mobile Menu Links -->
+      <router-link to="/"
+        class="text-[#031C41] text-lg hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200"
+      >
+        Accueil
+      </router-link>
+
       <router-link
         to="/videocatalog"
         class="text-[#031C41] text-lg hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200"
       >
         Catalogue de vidéos
       </router-link>
-      <a
-        href="#"
-        class="text-[#031C41] text-lg hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200"
-      >
-        Quiz
-      </a>
+
       <a
         href="#"
         class="text-[#031C41] text-lg hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200"
@@ -137,12 +137,11 @@ const closeMenu = () => {
       >
         Forum
       </a>
-      <a
-          href="#"
-          class="text-[#031C41] text-lg hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200"
-          >
-        A propos de nous
-        </a>
+
+      <router-link to="/Search">
+            <img :src="Searsh" alt="">
+          </router-link>
+          
       <button
         class="bg-[#0056D2] px-10 py-3 rounded-full text-white text-lg font-semibold hover:bg-[#003d99] transition duration-200"
       >

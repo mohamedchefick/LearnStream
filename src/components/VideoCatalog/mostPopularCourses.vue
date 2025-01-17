@@ -46,11 +46,12 @@ const courses = [
         time: 10,
         level: 'Facile'
     },
+    
 ]
 </script>
 
 <template>
-    <div class="h-screen px-6 sm:px-12 lg:px-24 bg-[#F6FAFF] py-10">
+    <div class=" px-6 sm:px-12 lg:px-24 bg-[#F6FAFF] py-10">
         <div class="md:flex justify-between items-center">
             <div class="text-[#0056D2] text-xl sm:text-3xl font-bold xl:w-2/5">
                 Les cours les plus populaires
@@ -100,7 +101,7 @@ const courses = [
             <div 
                 v-for="(item, index) in courses" 
                 :key="index" 
-                class="bg-white rounded-3xl shadow-2xl hover:-translate-x-1 hover:-translate-y-1 duration-200"
+                class="bg-white rounded-3xl shadow-2xl hover:-translate-x-1 hover:-translate-y-1 duration-200 p-1"
             >
                 <img :src="item.img" class="w-full" alt="">
                 <div class="py-4 flex items-center justify-between bg-white rounded-t-full px-4">

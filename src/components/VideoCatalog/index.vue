@@ -3,6 +3,9 @@ import headers from '../Helper/Header/index.vue'
 import hero from './hero.vue';
 import mostPopularCourses from './mostPopularCourses.vue';
 import CoursesCertificats from './CoursesCertificats.vue';
+import bestcategor from './bestcategor.vue'
+import avancements from './avancements.vue';
+import footers from '../Helper/Footer/index.vue'
 </script>
 
 <template>
@@ -15,6 +18,12 @@ import CoursesCertificats from './CoursesCertificats.vue';
         <!--  -->
         <mostPopularCourses />
         <!--  -->
+        <bestcategor/>
+        <!--  -->
         <CoursesCertificats />
+        <!--  -->
+        <avancements />
+        <!--  -->
+        <footers />
     </div>
 </template>

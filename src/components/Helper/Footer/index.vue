@@ -4,13 +4,16 @@ import youtube from '../../../assets/icons/youtube.svg'
 import linkedin from '../../../assets/icons/linkelin.svg'
 import instagram from '../../../assets/icons/instagram.svg'
 import x from '../../../assets/icons/x.svg' 
+import imgLogo from '../../../assets/images/img-logo.webp'
 </script>
 <template>
     <div class="bg-[#ffc65564] py-24 px-6 sm:px-12 lg:px-24 text-[#6D737A]">
         <div class="flex flex-wrap xl:flex-nowrap justify-between gap-10 lg:gap-5">
             <!-- Colonne 1 -->
             <div class="w-full sm:w-1/2 lg:w-1/4 space-y-3">
-                <h1 class="bg-[#FFA600] font-extrabold px-6 py-3 text-white rounded-full inline-block">Logo</h1>
+                <div class="">
+                    <img :src="imgLogo" class="w-28 h-12"  alt="">
+                </div>
                 <h1 class="text-black text-xl font-semibold">Contactez-nous</h1>
                 <h1>Téléphone : +123 400 123</h1>
                 <h1>Praesent nulla massa, hendrerit vestibulum gravida in, feugiat auctor felis.</h1>

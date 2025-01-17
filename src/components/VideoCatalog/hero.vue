@@ -1,28 +1,36 @@
 <script setup>
 import IMGhero2 from '../../assets/images/img-hero2.webp'
-import iconSearch from '../../assets/icons/iconSearch.svg'
+import IMGBOY from '../../assets/images/img-boy.webp'
 </script>
 
 <template>
   <div 
-    class="relative bg-cover bg-center h-screen w-full" 
-    :style="{ backgroundImage: `url(${IMGhero2})` }"
+    class="bg-[#F5FDFF] flex justify-center px-4 lg:px-32 pt-10 lg:pt-0"
   >
-    <!-- Input field -->
-    <div class="relative inset-0 flex items-center justify-center pt-10">
-      <div class="relative w-11/12 sm:w-3/4 md:w-1/2 lg:w-1/3">
-        <input 
-          type="text" 
-          placeholder="Rechercher des cours" 
-          class="text-base sm:text-lg rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full h-12 pl-5 pr-12"
-        />
-        <!-- Icon inside input -->
+    <div class="flex flex-col-reverse lg:flex-row items-center gap-6 lg:gap-10">
+      <!-- Image principale -->
+      <img 
+        :src="IMGhero2" 
+        class="w-full lg:w-1/3 h-96 lg:h-80 object-cover" 
+        alt="IMGhero2" 
+      />
+
+      <!-- Texte principal -->
+      <div 
+        class="font-extrabold text-xl lg:text-3xl text-[#0056D2] text-center lg:w-2/3 px-2"
+      >
+        Découvrez nos nouveaux contenus en développement web
+      </div>
+
+      <!-- Image secondaire -->
+      <div class="w-full lg:w-2/5 lg:flex hidden">
         <img 
-          :src="iconSearch" 
-          class="absolute right-0 top-1/2 transform -translate-y-1/2" 
-          alt="Search Icon"
+          :src="IMGBOY" 
+          class="w-full h-40 lg:h-80 object-cover" 
+          alt="IMGhero2"
         />
       </div>
     </div>
   </div>
 </template>
+
