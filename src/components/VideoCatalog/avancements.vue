@@ -1,3 +1,4 @@
+
 <script setup>
 import iconDecouvrir from '../../assets/icons/decouvrir.svg';
 import imgDecouver from '../../assets/images/img-categorie2.webp';

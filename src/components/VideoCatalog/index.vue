@@ -20,7 +20,7 @@ import footers from '../Helper/Footer/index.vue'
         <!--  -->
         <bestcategor/>
         <!--  -->
-        <CoursesCertificats />
+        <!-- <CoursesCertificats /> -->
         <!--  -->
         <avancements />
         <!--  -->

@@ -1,19 +1,51 @@
 <script>
 import iconDecouvrir from '../../assets/icons/decouvrir.svg';
+import { apiRequest } from '../../utils/api'; // Assurez-vous que le chemin est correct
 
 export default {
     data() {
         return {
-        email: "",
-        password: "",
-        iconDecouvrir,
+            email: "",
+            password: "",
+            iconDecouvrir,
+            loading: false, // Ajout d'un état de chargement
         };
     },
     methods: {
-        handleLogin() {
-        // Ajoute ici la logique d'authentification
-        console.log("Email:", this.email);
-        console.log("Password:", this.password);
+        async handleLogin() {
+            this.loading = true; // Mettre le chargement à vrai
+            try {
+                const response = await apiRequest({
+                    method: 'POST',
+                    url: 'users/login/',
+                    data: {
+                        email: this.email,
+                        password: this.password,
+                    },
+                });
+
+                if (response.status !== 200) {
+                    alert("Échec de la connexion. Veuillez vérifier vos identifiants."); // Remplacez par un Toast si nécessaire
+                    throw new Error("Échec de la connexion. Veuillez vérifier vos identifiants.");
+                }
+
+                const data = response.data; // Récupération des données
+                // Stocker les tokens et les données utilisateur dans localStorage
+                localStorage.setItem('refreshToken', data.refresh);
+                localStorage.setItem('accessToken', data.access);
+                localStorage.setItem('userData', JSON.stringify(data.user));
+
+                alert(`Bienvenue ${data.user.first_name}!`); // Remplacez par un Toast si nécessaire
+                this.$router.push({ name: 'Home' }); // Navigation vers la page d'accueil
+            } catch (error) {
+                if (error.response && error.response.data.non_field_errors) {
+                    for (const message of error.response.data.non_field_errors) {
+                        alert(message); // Remplacez par un Toast si nécessaire
+                    }
+                }
+            } finally {
+                this.loading = false; // Mettre le chargement à faux
+            }
         },
     },
 };
@@ -29,7 +61,6 @@ export default {
           <div class="ms-20 w-1/3">
             <img :src="iconDecouvrir" class="w-full mt-0 ms-20" alt="">
           </div>
-          <!-- <span class="text-orange-400 underline"> </span> -->
         </h2>
         <!-- Formulaire -->
         <form @submit.prevent="handleLogin">
@@ -53,15 +84,12 @@ export default {
           </div>
           <!-- Bouton de connexion -->
            <div class="flex justify-center mt-10">
-            <router-link to="/" class="w-full">
-
-                <button
+            <button
                  type="submit"
                  class="w-full bg-blue-600 text-white py-2 rounded-full hover:bg-blue-700 transition duration-200"
                >
                  Se connecter
                </button>       
-            </router-link>   
            </div>
         </form>
         <!-- Liens supplémentaires -->
@@ -99,9 +127,6 @@ export default {
     </div>
   </template>
   
-
-  
   <style>
   /* Ajoute ici les styles globaux si nécessaires */
   </style>
-  

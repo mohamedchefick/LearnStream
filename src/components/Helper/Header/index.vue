@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import IMGLogo from "../../../assets/images/img-logo.webp"
 import Searsh from "../../../assets/icons/iconSearsh2.svg"
+import userDrop from "../userDrop.vue"
 
 const showMenu = ref(false);
 const toggleMenu = () => {
@@ -10,6 +11,9 @@ const toggleMenu = () => {
 const closeMenu = () => {
   showMenu.value = false;
 };
+
+// Récupérer userData depuis le local storage
+const userData = JSON.parse(localStorage.getItem('userData'));
 </script>
 
 <template>
@@ -90,14 +94,18 @@ const closeMenu = () => {
       </nav>
 
       <!-- Inscription Button -->
-      <router-link to="/login">
-
-      <button
-        class="bg-[#0056D2] px-6 py-3 rounded-full text-white text-base font-semibold hover:bg-[#003d99] transition duration-200 lg:flex hidden"
-      >
-        Connexion
-      </button>
-      </router-link>
+      <template v-if="userData">
+        <userDrop :image_url="userData.image_url" :username="userData.first_name + ' ' + userData.last_name" />
+      </template>
+      <template v-else>
+        <router-link to="/login">
+          <button
+            class="bg-[#0056D2] px-6 py-3 rounded-full text-white text-base font-semibold hover:bg-[#003d99] transition duration-200 lg:flex hidden"
+          >
+            Connexion
+          </button>
+        </router-link>
+      </template>
     </div>
 
     <!-- Mobile Menu -->

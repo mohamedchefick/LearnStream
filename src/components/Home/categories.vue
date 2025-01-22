@@ -1,3 +1,72 @@
+<script setup>
+// Liste des catégories avec noms et icônes
+import { ref, onMounted } from 'vue';
+import iconDecouvrir from '../../assets/icons/decouvrir.svg';
+import Fleche from '../../assets/icons/fleche.svg';
+import FlecheHover from '../../assets/icons/flecheHover.svg';
+
+import Design from '../../assets/icons/design.svg';
+import Dev from '../../assets/icons/dev.svg';
+import Data from '../../assets/icons/data.svg';
+import Cloud from '../../assets/icons/cloud.svg';
+import Mark from '../../assets/icons/mark.svg';
+import Cyber from '../../assets/icons/cyber.svg';
+import Gestion from '../../assets/icons/gestion.svg';
+import Machine from '../../assets/icons/machine.svg';
+import { apiRequest } from '../../utils/api';
+
+// Icônes par défaut pour chaque catégorie (exemple avec des emojis ou icônes dynamiques)
+const categories = ref([]);
+
+// Index actif pour styliser une carte
+const activeIndex = ref(0);
+
+// Réinitialisation de l'index actif (facultatif pour conserver l'effet au survol)
+const resetActiveIndex = () => {
+  activeIndex.value = 0;
+};
+
+const iconMapping = {
+  'Design UX/UI': Design,
+  'Développement Web': Dev,
+  'Data Science': Data,
+  'Cloud Computing': Cloud,
+  'Marketing Digital': Mark,
+  'Cybersécurité': Cyber,
+  'Gestion de Projet Agile': Gestion,
+  'Machine Learning': Machine
+};
+
+// Nouveau mapping pour correspondre aux clés de l'API
+const categoryIconMapping = {
+  'ui_ux': Design,
+  'dev': Dev,
+  'data_science': Data,
+  'cloud_computing': Cloud,
+  'marketing': Mark,
+  'cybersecurity': Cyber,
+  'project_management': Gestion,
+  'ai': Machine
+};
+
+onMounted(async () => {
+  try {
+    const response = await apiRequest({
+      method: 'GET',
+      url: `courses/categories/`
+    });
+    
+    categories.value = response.data.map(category => ({
+      name: category.name,
+      icon: categoryIconMapping[category.icon] || Design // Utilise l'icône correspondante ou Design par défaut
+    }));
+  } catch (error) {
+    console.error('Erreur lors de la récupération des catégories:', error);
+  }
+});
+</script>
+
+
 <template>
     <div class="bg-[#ffc65564] py-12 px-6 lg:px-20">
       <!-- Titre -->
@@ -8,10 +77,10 @@
             </h2>
             <!-- <div class="mx-auto flex">
             </div> -->
-        <p class="lg:text-xs text-gray-600 xl:w-1/3 mb-6">
-          Plongez dans un large éventail de vidéos conçues pour vous former aux technologies les plus innovantes.
-        </p>
-      </div>
+          </div>
+          <p class="text-base-200 xl:w-1/3 mb-6">
+            Plongez dans un large éventail de vidéos conçues pour vous former aux technologies les plus innovantes.
+          </p>
   
       <!-- Grille des catégories -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -43,44 +112,6 @@
     </div>
   </template>
   
-  <script setup>
-  // Liste des catégories avec noms et icônes
-  import { ref } from 'vue';
-  import iconDecouvrir from '../../assets/icons/decouvrir.svg';
-  import Fleche from '../../assets/icons/fleche.svg';
-  import FlecheHover from '../../assets/icons/flecheHover.svg';
-
-  import Design from '../../assets/icons/design.svg';
-  import Dev from '../../assets/icons/dev.svg';
-  import Data from '../../assets/icons/data.svg';
-  import Cloud from '../../assets/icons/cloud.svg';
-  import Mark from '../../assets/icons/mark.svg';
-  import Cyber from '../../assets/icons/cyber.svg';
-  import Gestion from '../../assets/icons/gestion.svg';
-  import Machine from '../../assets/icons/machine.svg';
-  
-  // Icônes par défaut pour chaque catégorie (exemple avec des emojis ou icônes dynamiques)
-  const categories = ref([
-    { name: 'Design UX/UI', icon: Design },
-    { name: 'Développement Web', icon: Dev },
-    { name: 'Data Science', icon: Data },
-    { name: 'Cloud Computing', icon: Cloud },
-    { name: 'Marketing Digital', icon: Mark },
-    { name: 'Cybersécurité', icon: Cyber },
-    { name: 'Gestion de Projet Agile', icon: Gestion },
-    { name: 'Machine Learning', icon: Machine }
-  ]);
-  
-  // Index actif pour styliser une carte
-  const activeIndex = ref(0);
-  
-  // Réinitialisation de l'index actif (facultatif pour conserver l'effet au survol)
-  const resetActiveIndex = () => {
-    activeIndex.value = 0;
-  };
-  </script>
-  
   <style scoped>
   /* Optionnel : Ajout d'une transition douce pour le hover */
   </style>
-  
