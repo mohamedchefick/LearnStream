@@ -1,8 +1,8 @@
 <script setup>
 import iconDecouvrir from '../../assets/icons/decouvrir.svg'
-import courseCard from '../Helper/courseCard.vue'
 import { ref, onMounted } from 'vue'
 import { apiRequest } from '../../utils/api'
+import PathwayCard from '../Helper/pathwayCard.vue'
 
 const courses = ref([])
 
@@ -45,8 +45,9 @@ onMounted(() => {
             <div 
                 v-for="(item, index) in courses" 
                 :key="index" 
+                class="h-full"
             >
-                <courseCard :image="item.img" :category="item.category" :title="item.title" :rating="item.rating" :shortdescription="item.shortdescription" />
+                <PathwayCard :image="item.img" :category="item.category" :title="item.title" :rating="item.rating" :shortdescription="item.shortdescription" />
             </div>
         </div>
     </div>
