@@ -4,6 +4,7 @@ import VideoCatalog from '../views/videoCatalog/index.vue'
 import Search from '../views/Search/index.vue'
 import Detailscours from '../views/DetailsCours/index.vue'
 import Login from '../views/Login/index.vue'
+import AboutMe from '../views/AboutMe/index.vue'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/detailscours',
     name: 'DetailsCours',
     component: Detailscours
+  },
+  {
+    path: '/aboutme',
+    name: 'AboutMe',
+    component: AboutMe
   },
 ];
 
