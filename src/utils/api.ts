@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_URL = 'http://localhost:9000/';
+import { API_URL } from '../../env';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -37,7 +36,7 @@ const handleResponseError = async (error: any, navigate: any) => {
     if (!refreshToken) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-      navigate('/login');
+      navigate('/auth');
       throw error;
     }
 
@@ -53,7 +52,7 @@ const handleResponseError = async (error: any, navigate: any) => {
     } catch (refreshError) {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-      navigate('/login');
+      navigate('/auth');
       throw refreshError;
     }
   }

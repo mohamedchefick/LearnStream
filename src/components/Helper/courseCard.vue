@@ -1,7 +1,12 @@
 <script setup>
 import categoryIcon from '../../assets/icons/category.png'
+import { API_URL } from '../../../env'
 
 defineProps({
+  id: {
+    type: String,
+    required: true
+  },
   category: {
     type: String,
     required: true
@@ -38,11 +43,12 @@ defineProps({
 </script>
 
 <template>
-  <div 
+  <RouterLink 
+  :to="`/courseDetail/${id}`"
   class="bg-white rounded-3xl bg-gray-100 shadow-lg flex flex-col h-full"
   >
     <div class="h-48">
-      <img :src="image" class="w-full h-full object-cover rounded-t-3xl" alt="">
+      <img :src="image.startsWith('http') ? image : API_URL + image" class="w-full h-full object-cover rounded-t-3xl" alt="">
     </div>
     <div class="py-2 rounded-b-3xl flex flex-col flex-grow">
       <div class="px-4 mb-2 flex justify-between">
@@ -69,5 +75,5 @@ defineProps({
         </h1>
       </div>
     </div>
-  </div>
+  </RouterLink>
 </template>

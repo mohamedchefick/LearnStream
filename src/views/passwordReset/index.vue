@@ -1,14 +1,14 @@
 <script setup>
-import Login from '../../components/login/index.vue'
-import ScrollToTop from '../../components/Helper/scrollToTop.vue';
 import Headers from '../../components/Helper/Header/index.vue';
 import Footer from '../../components/Helper/Footer/index.vue';
-
+import passwordReset from '../../components/login/passwordReset.vue';
+import ScrollToTop from '../../components/Helper/scrollToTop.vue';  
 </script>
 
 <template>
     <Headers />
     <ScrollToTop />
-    <Login />
-    <Footer />
+    <passwordReset />
+    <!-- <Footer /> -->
 </template>
+

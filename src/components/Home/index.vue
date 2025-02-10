@@ -1,4 +1,5 @@
 <script setup>
+import Header from '../Helper/Header/index.vue';
 import Hero from './hero.vue';
 import Plateforme from './plateforme.vue';
 import Categories from './Categories.vue';
@@ -11,9 +12,10 @@ import Footer from '../Helper/Footer/index.vue'
 
 <template>
     <div class="">
+        <Header/>
         <Hero/>
         <!--  -->
-        <Decouvrir/>
+        <!-- <Decouvrir/> -->
         <!--  -->
         <Plateforme />
         <!--  -->
@@ -21,7 +23,7 @@ import Footer from '../Helper/Footer/index.vue'
         <!--  -->
         <OurAchievements/>
         <!--  -->
-        <Temoignage />
+        <!-- <Temoignage /> -->
         <!--  -->
         <Rejoin/>
         <!--  -->

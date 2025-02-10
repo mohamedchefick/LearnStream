@@ -1,7 +1,12 @@
 <script setup>
 import categoryIcon from '../../assets/icons/category.png'
+import { API_URL } from '../../../env'
 
 defineProps({
+  id: {
+    type: String,
+    required: true
+  },
   category: {
     type: String,
     required: true
@@ -26,11 +31,12 @@ defineProps({
 </script>
 
 <template>
-  <div 
-  class="bg-white rounded-3xl shadow-lg"
+  <RouterLink 
+  :to="`/pathways/${id}`"
+  class="bg-white rounded-3xl bg-gray-100 shadow-lg flex flex-col h-full"
   >
   <div class="h-48">
-    <img :src="image" class="w-full h-full object-cover rounded-t-3xl" alt="">
+    <img :src="image.startsWith('http') ? image : API_URL + image" class="w-full h-full object-cover rounded-t-3xl" alt="">
   </div>
   <div class="py-4 flex justify-between bg-white rounded-b-3xl px-4">
     <div class="flex items-center gap-2">
@@ -46,5 +52,5 @@ defineProps({
     <p class="text-sm text-start text-gray-500 pb-5">{{ shortdescription }}</p>
   </div>
 
-  </div>
+  </RouterLink>
 </template>

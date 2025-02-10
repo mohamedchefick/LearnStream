@@ -85,7 +85,7 @@ onMounted(async () => {
       <!-- Grille des catégories -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Catégories -->
-        <div
+        <router-link
           v-for="(categorie, index) in categories"
           :key="index"
           class="relative group p-4 border rounded-lg shadow-md hover:shadow-lg transition-all duration-300 py-3 flex items-center justify-between cursor-pointer py-8 hover:scale-105 transition-transform duration-300"
@@ -95,6 +95,7 @@ onMounted(async () => {
           }"
           @mouseover="activeIndex = index"
           @mouseleave="resetActiveIndex"
+          :to="`/search?category=${categorie.name}`"
         >
             
           <!-- Texte -->
@@ -107,7 +108,7 @@ onMounted(async () => {
           <div class="">
             <img :src="Fleche" alt="">
           </div>
-        </div>
+        </router-link>
       </div>
     </div>
   </template>

@@ -1,5 +1,5 @@
 <script setup>
-import Login from '../../components/login/index.vue'
+import Settings from '../../components/profile/settings.vue'
 import ScrollToTop from '../../components/Helper/scrollToTop.vue';
 import Headers from '../../components/Helper/Header/index.vue';
 import Footer from '../../components/Helper/Footer/index.vue';
@@ -9,6 +9,6 @@ import Footer from '../../components/Helper/Footer/index.vue';
 <template>
     <Headers />
     <ScrollToTop />
-    <Login />
+    <Settings />
     <Footer />
 </template>

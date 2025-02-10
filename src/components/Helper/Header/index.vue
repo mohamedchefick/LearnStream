@@ -17,7 +17,7 @@ const userData = JSON.parse(localStorage.getItem('userData'));
 </script>
 
 <template>
-  <main class=" lg:border  fixed top-0 left-0 z-50 w-full bg-white mb-10 shadow-2xl">
+  <main class="lg:border fixed top-0 left-0 z-50 w-full bg-white mb-10 shadow">
     <div class="lg:container px-8 lg:px-3 lg:mx-auto py-6 flex items-center justify-between">
       <!-- Logo -->
       <div class="">
@@ -67,51 +67,59 @@ const userData = JSON.parse(localStorage.getItem('userData'));
       </div>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden lg:flex items-center gap-8 xl:gap-16 text-base text-[#031C41] xl:ms-8 font-normal justify-between">
+      <nav class="hidden lg:flex items-center gap-8 xl:gap-16 text-lg text-[#031C41] xl:ms-8 font-normal justify-between">
         <router-link to="/"
             class="relative cursor-pointer transition duration-300 before:content-[''] before:absolute before:w-0 before:h-[2px] before:bottom-0 before:left-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full"
+            :class="{ 'font-bold': $route.path === '/' }"
           >
           Accueil
           </router-link>
-          <router-link to="/videocatalog"
+          <router-link to="/courses"
             class="relative cursor-pointer transition duration-300 before:content-[''] before:absolute before:w-0 before:h-[2px] before:bottom-0 before:left-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full"
+            :class="{ 'font-bold': $route.path === '/courses' }"
           >
           Cours
           </router-link>
           <a
             class="relative cursor-pointer transition duration-300 before:content-[''] before:absolute before:w-0 before:h-[2px] before:bottom-0 before:left-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full"
           >
-            Certifications
+            À propos
           </a>
-          <a
+          <router-link to="/contact"
             class="relative cursor-pointer transition duration-300 before:content-[''] before:absolute before:w-0 before:h-[2px] before:bottom-0 before:left-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full"
+            :class="{ 'font-bold': $route.path === '/contact' }"
           >
-            Forum
-          </a>
+            Contact
+          </router-link>
           <router-link to="/Search">
-            <img :src="Searsh" alt="">
+            <i class="fa-solid fa-magnifying-glass text-2xl"></i>
           </router-link>
       </nav>
 
       <!-- Inscription Button -->
       <template v-if="userData">
-        <userDrop :image_url="userData.image_url" :username="userData.first_name + ' ' + userData.last_name" />
+        <userDrop :image_url="userData.profile_picture || userData.picture_url" :username="userData.first_name + ' ' + userData.last_name" class="hidden lg:block" />
       </template>
       <template v-else>
-        <router-link to="/login">
-          <button
-            class="bg-[#0056D2] px-6 py-3 rounded-full text-white text-base font-semibold hover:bg-[#003d99] transition duration-200 lg:flex hidden"
+        <div class="lg:flex hidden gap-2">
+          <router-link to="/auth#signup"
+          class="btn btn-primary px-6 py-3 rounded-full text-white font-semibold "
           >
-            Connexion
-          </button>
-        </router-link>
+              S'inscrire
+          </router-link>
+          <router-link to="/auth"
+          class="btn border-2 border-[#0056D2] px-6 py-3 rounded-full text-[#0056D2] font-semibold "
+          >
+              Se connecter
+          </router-link>
+        </div>
       </template>
     </div>
 
     <!-- Mobile Menu -->
     <div
       v-if="showMenu"
-      class="fixed top-0 left-0 w-full h-screen bg-white shadow-lg z-50 flex flex-col items-center space-y-6 pt-20 lg:hidden"
+      class="fixed top-0 left-0 w-full h-screen bg-white shadow-lg z-50 flex flex-col items-center space-y-6 pt-20 lg:hidden overflow-y-auto"
     >
       <!-- Close Button -->
       <button
@@ -122,44 +130,66 @@ const userData = JSON.parse(localStorage.getItem('userData'));
         ×
       </button>
 
+      <!-- User Profile in Mobile Menu -->
+      <div v-if="userData" class="w-full flex flex-col items-center mb-6">
+        <userDrop :image_url="userData.image_url" :username="userData.first_name + ' ' + userData.last_name" />
+      </div>
+
       <!-- Mobile Menu Links -->
-      <router-link to="/"
-        class="text-[#031C41] text-lg hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200"
+      <router-link 
+        to="/"
+        @click="closeMenu"
+        class="text-[#031C41] text-xl hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200 w-4/5 text-center"
+        :class="{ 'font-bold': $route.path === '/' }"
       >
         Accueil
       </router-link>
 
       <router-link
-        to="/videocatalog"
-        class="text-[#031C41] text-lg hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200"
+        to="/courses"
+        @click="closeMenu"
+        class="text-[#031C41] text-xl hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200 w-4/5 text-center"
+        :class="{ 'font-bold': $route.path === '/courses' }"
       >
-        Catalogue de vidéos
+        Cours
       </router-link>
 
       <a
-        href="#"
-        class="text-[#031C41] text-lg hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200"
+        @click="closeMenu"
+        class="text-[#031C41] text-xl hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200 w-4/5 text-center cursor-pointer"
       >
-        Certifications
+        À propos
       </a>
-      <a
-        href="#"
-        class="text-[#031C41] text-lg hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200"
+      
+      <router-link
+        to="/contact"
+        @click="closeMenu"
+        class="text-[#031C41] text-xl hover:text-white hover:bg-[#031C41] px-6 py-2 rounded-full transition duration-200 w-4/5 text-center"
+        :class="{ 'font-bold': $route.path === '/contact' }"
       >
-        Forum
-      </a>
+        Contact
+      </router-link>
 
-      <router-link to="/Search">
-            <img :src="Searsh" alt="">
-          </router-link>
+      <router-link 
+        to="/Search"
+        @click="closeMenu"
+        class="w-4/5 flex justify-center"
+      >
+        <img :src="Searsh" alt="Rechercher" class="w-6 h-6">
+      </router-link>
           
-          <router-link to="/login">
-            <button
-              class="bg-[#0056D2] px-10 py-3 rounded-full text-white text-lg font-semibold hover:bg-[#003d99] transition duration-200"
-            >
-              Connexion
-            </button>
-          </router-link>
+      <router-link 
+        v-if="!userData"
+        to="/auth"
+        @click="closeMenu"
+        class="w-4/5"
+      >
+        <button
+          class="bg-[#0056D2] px-10 py-3 rounded-full text-white text-xl font-semibold hover:bg-[#003d99] transition duration-200 w-full"
+        >
+          Connexion
+        </button>
+      </router-link>
     </div>
   </main>
 </template>

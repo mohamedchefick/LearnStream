@@ -13,7 +13,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="bg-[#F6FAFF] h-auto py-10 px-6 sm:px-12 lg:px-24 mb-40">
+    <div class="bg-[#F6FAFF] h-auto py-10 px-6 sm:px-12 lg:px-24">
         <!-- Container pour la flexibilité -->
         <div class="flex flex-col lg:flex-row items-center pb-10 gap-10">
             <!-- Image -->
@@ -37,11 +37,12 @@ onMounted(() => {
                         {{ 'Commencez à apprendre en vous inscrivant' }}
                     </h1>
                 </template>
-                <button 
+                <router-link 
+                    :to="isLoggedIn ? '/courses' : '/auth#signup'"
                     class="bg-[#0056D2] py-3 lg:py-4 px-6 rounded-xl text-sm lg:text-base text-white hover:bg-[#003F9A] hover:scale-105 transition-transform duration-300"
                 >
                     {{ isLoggedIn ? 'Explorer les cours' : 'S\'inscrire gratuitement' }}
-                </button>
+                </router-link>
             </div>
         </div>
     </div>

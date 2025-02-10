@@ -18,6 +18,7 @@ const fetchCourses = async (page = 1) => {
       url: `courses/courses/?page_size=4&page=${page}`
     })
     courses.value = response.data.results.map(course => ({
+      id: course.id,
       img: course.image || '',
       title: course.title || '',
       category: course.category.name || '',
@@ -27,7 +28,6 @@ const fetchCourses = async (page = 1) => {
       duration: course.duration || 0,
       level: course.level || 'Débutant'
     }))
-    console.log(courses.value)
     totalPages.value = Math.ceil(response.data.count / 4)
   } catch (error) {
     console.error('Erreur lors de la récupération des cours:', error)
@@ -75,6 +75,7 @@ onMounted(() => {
                 class="h-full"
             >
                 <courseCard 
+                    :id="item.id"
                     :image="item.img" 
                     :category="item.category" 
                     :categoryColor="item.categoryColor"

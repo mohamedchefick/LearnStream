@@ -13,6 +13,7 @@ const fetchCourses = async () => {
       url: 'courses/pathways/?page_size=4'
     })
     courses.value = response.data.results.map(course => ({
+      id: course.id,
       img: course.image,
       title: course.title,
       category: course.category.name,
@@ -47,7 +48,7 @@ onMounted(() => {
                 :key="index" 
                 class="h-full"
             >
-                <PathwayCard :image="item.img" :category="item.category" :title="item.title" :rating="item.rating" :shortdescription="item.shortdescription" />
+                <PathwayCard :id="item.id" :image="item.img" :category="item.category" :title="item.title" :rating="item.rating" :shortdescription="item.shortdescription" />
             </div>
         </div>
     </div>

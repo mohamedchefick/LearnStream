@@ -2,8 +2,11 @@
 import iconDecouvrir from '../../assets/icons/decouvrir.svg';
 import { ref, onMounted } from 'vue';
 import { apiRequest } from '../../utils/api';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const userCourses = ref([]);
+const currentItem = ref(null);
 
 const fetchUserCourses = async () => {
   try {
@@ -12,9 +15,29 @@ const fetchUserCourses = async () => {
       url: "/learning/user/courses/?page_size=3" 
     });
     userCourses.value = response.data.results;
-    console.log('Response:', response.data.results);
   } catch (error) {
     console.error('Erreur lors de la récupération des cours:', error);
+  }
+};
+
+const handleContinueCourse = async (courseId) => {
+  try {
+    const response = await apiRequest({
+      method: 'GET',
+      url: `courses/courses/${courseId}/`
+    });
+    currentItem.value = response.data.current_item;
+    
+    if (currentItem.value && currentItem.value.type === "lesson") {
+      router.push(`/lesson/${currentItem.value.id}`);
+    } else if (currentItem.value && currentItem.value.type === "quiz") {
+      router.push(`/quiz/${currentItem.value.id}`);
+    } else {
+      router.push(`/courseDetail/${courseId}`);
+    }
+  } catch (error) {
+    console.error('Erreur lors de la récupération du cours:', error);
+    router.push(`/courseDetail/${courseId}`);
   }
 };
 
@@ -24,7 +47,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="bg-[#EFE6D4] px-6 sm:px-12 lg:px-24 py-10">
+    <div v-if="userCourses.length > 0" class="bg-[#EFE6D4] px-6 sm:px-12 lg:px-24 py-10">
         <!-- Title Section -->
         <div class="text-[#0056D2] text-xl sm:text-3xl font-bold xl:w-2/5">
             Mes progressions
@@ -38,7 +61,8 @@ onMounted(() => {
             <div 
                 v-for="course in userCourses" 
                 :key="course.id" 
-                class="bg-white p-4 rounded-3xl shadow-lg flex flex-col h-full"
+                @click="handleContinueCourse(course.course.id)"
+                class="bg-white p-4 rounded-3xl shadow-lg flex flex-col h-full cursor-pointer hover:shadow-xl transition-shadow duration-300"
             >
                 <img :src="course.course.image" class="rounded-3xl w-full h-48 object-cover" alt="">
                 <div class="flex flex-col flex-grow p-3">

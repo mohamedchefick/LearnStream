@@ -1,19 +1,69 @@
 <script>
 import iconDecouvrir from '../../assets/icons/decouvrir.svg';
-import { apiRequest } from '../../utils/api'; // Assurez-vous que le chemin est correct
+import { apiRequest } from '../../utils/api';
+import logo from '../../assets/images/img-logo.webp';
+import loginImage from '../../assets/images/login-image.png';
+import registerImage from '../../assets/images/register-image.png';
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-bootstrap.css';
 
 export default {
     data() {
         return {
             email: "",
             password: "",
+            firstName: "",
+            lastName: "",
             iconDecouvrir,
-            loading: false, // Ajout d'un état de chargement
+            logo,
+            loading: false,
+            resetLoading: false,
+            activeTab: "login",
+            loginImage,
+            registerImage,
+            errors: {},
+            toast: useToast(),
+            shakeEmail: false
         };
     },
+    mounted() {
+        // Vérifier si l'URL contient #signup
+        if (window.location.hash === '#signup') {
+            this.activeTab = 'register';
+        }
+    },
+    computed: {
+        showLoginButton() {
+            return this.email && this.password;
+        },
+        showRegisterButton() {
+            return this.email && this.password && this.firstName && this.lastName;
+        }
+    },
     methods: {
+        validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        },
         async handleLogin() {
-            this.loading = true; // Mettre le chargement à vrai
+            if (!this.email) {
+                this.shakeEmail = true;
+                setTimeout(() => {
+                    this.shakeEmail = false;
+                }, 500);
+                return;
+            }
+
+            if (!this.validateEmail(this.email)) {
+                this.toast.error("Veuillez saisir une adresse email valide");
+                this.shakeEmail = true;
+                setTimeout(() => {
+                    this.shakeEmail = false;
+                }, 500);
+                return;
+            }
+
+            this.loading = true;
             try {
                 const response = await apiRequest({
                     method: 'POST',
@@ -25,108 +75,285 @@ export default {
                 });
 
                 if (response.status !== 200) {
-                    alert("Échec de la connexion. Veuillez vérifier vos identifiants."); // Remplacez par un Toast si nécessaire
+                    this.toast.error("Échec de la connexion. Veuillez vérifier vos identifiants.");
                     throw new Error("Échec de la connexion. Veuillez vérifier vos identifiants.");
                 }
 
-                const data = response.data; // Récupération des données
-                // Stocker les tokens et les données utilisateur dans localStorage
+                const data = response.data;
                 localStorage.setItem('refreshToken', data.refresh);
                 localStorage.setItem('accessToken', data.access);
                 localStorage.setItem('userData', JSON.stringify(data.user));
+                localStorage.setItem('email', this.email);
+                localStorage.setItem('password', this.password);
 
-                alert(`Bienvenue ${data.user.first_name}!`); // Remplacez par un Toast si nécessaire
-                this.$router.push({ name: 'Home' }); // Navigation vers la page d'accueil
+                this.toast.success(`Bienvenue ${data.user.first_name}!`);
+                this.$router.push({ name: 'Home' });
             } catch (error) {
                 if (error.response && error.response.data.non_field_errors) {
                     for (const message of error.response.data.non_field_errors) {
-                        alert(message); // Remplacez par un Toast si nécessaire
+                        this.toast.error(message);
                     }
                 }
             } finally {
-                this.loading = false; // Mettre le chargement à faux
+                this.loading = false;
             }
         },
+        async handleSignUp() {
+            if (!this.email || !this.password || !this.firstName || !this.lastName) {
+                this.errors = { general: "Tous les champs sont obligatoires." };
+                if (!this.email) {
+                    this.shakeEmail = true;
+                    setTimeout(() => {
+                        this.shakeEmail = false;
+                    }, 500);
+                }
+                return;
+            }
+
+            if (!this.validateEmail(this.email)) {
+                this.errors = { general: "Veuillez saisir une adresse email valide" };
+                this.shakeEmail = true;
+                setTimeout(() => {
+                    this.shakeEmail = false;
+                }, 500);
+                return;
+            }
+
+            this.loading = true;
+            try {
+                const response = await apiRequest({
+                    method: "POST",
+                    url: "users/register/",
+                    data: {
+                        first_name: this.firstName,
+                        last_name: this.lastName,
+                        email: this.email,
+                        password: this.password,
+                    },
+                });
+
+                if (!response.status.toString().startsWith('2')) {
+                    throw new Error(response.status.toString());
+                }
+
+                localStorage.setItem('email', this.email);
+                localStorage.setItem('password', this.password);
+
+                this.errors = {};
+                
+                this.$router.push(`/email-activate-confirm`);
+            } catch (error) {
+                if (error.response?.data) {
+                    this.errors = error.response.data;
+                } else {
+                    this.errors = { general: error.message };
+                }
+            } finally {
+                this.loading = false;
+            }
+        },
+        switchTab(tab) {
+            this.activeTab = tab;
+        },
+        async handleForgotPassword() {
+            if (!this.email) {
+                this.shakeEmail = true;
+                setTimeout(() => {
+                    this.shakeEmail = false;
+                }, 500);
+                this.toast.warning("Veuillez saisir votre adresse email avant de réinitialiser le mot de passe");
+                return;
+            }
+
+            if (!this.validateEmail(this.email)) {
+                this.toast.error("Veuillez saisir une adresse email valide");
+                this.shakeEmail = true;
+                setTimeout(() => {
+                    this.shakeEmail = false;
+                }, 500);
+                return;
+            }
+
+            this.resetLoading = true;
+            try {
+                await apiRequest({
+                    method: 'POST',
+                    url: 'users/password/reset/request/',
+                    data: {
+                        email: this.email
+                    }
+                });
+                localStorage.setItem('email', this.email);
+                this.$router.push('/password-reset');
+            } catch (error) {
+                this.toast.error(error.response.data.detail || "Une erreur est survenue lors de la demande de réinitialisation");
+            } finally {
+                this.resetLoading = false;
+            }
+        }
     },
 };
 </script>
 
 <template>
-    <div class="flex items-center justify-center min-h-screen bg-gray-100">
-      <!-- Carte de connexion -->
-      <div class="bg-white rounded-lg shadow-md p-8 w-full max-w-md">
-        <!-- Titre -->
-        <h2 class="text-2xl font-bold text-center text-blue-600 mb-6">
-          Connexion
-          <div class="ms-20 w-1/3">
-            <img :src="iconDecouvrir" class="w-full mt-0 ms-20" alt="">
-          </div>
-        </h2>
-        <!-- Formulaire -->
-        <form @submit.prevent="handleLogin">
-          <div class="mb-10 mt-9">
-            <input
-              type="email"
-              placeholder="Entrez votre email"
-              class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 "
-              v-model="email"
-              required
-            />
-          </div>
-          <div class="mb-6">
-            <input
-              type="password"
-              placeholder="Entrez votre mot de passe"
-              class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-              v-model="password"
-              required
-            />
-          </div>
-          <!-- Bouton de connexion -->
-           <div class="flex justify-center mt-10">
-            <button
-                 type="submit"
-                 class="w-full bg-blue-600 text-white py-2 rounded-full hover:bg-blue-700 transition duration-200"
-               >
-                 Se connecter
-               </button>       
-           </div>
-        </form>
-        <!-- Liens supplémentaires -->
-        <div class="text-center mt-4 text-sm text-gray-600 mt-6">
-          <a href="#" class="text-blue-500 hover:underline">Mot de passe oublié</a>
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-5xl flex justify-center space-x-10 flex-row">
+            <!-- Section image -->
+            <div class="w-1/2 rounded-3xl hidden lg:block overflow-hidden">
+                <img 
+                    :src="activeTab === 'login' ? loginImage : registerImage"
+                    class="w-full h-full object-cover"
+                    :alt="activeTab === 'login' ? 'Image de connexion' : 'Image d\'inscription'"
+                />
+            </div>
+
+            <!-- Section formulaire -->
+            <div class="w-full flex flex-col md:w-2/3 lg:w-1/2 p-8">
+                <!-- Tabs -->
+                <h2 class="mb-5 text-center font-semibold">Bienvenue sur <img :src="logo" class="h-10 inline-block" /></h2>
+
+                <div class="flex bg-blue-200 rounded-full mx-auto justify-center mb-8 p-2 gap-2">
+                    <button 
+                        class="px-6 py-2 rounded-full transition-colors font-bold"
+                        :class="activeTab === 'login' ? 'bg-[#0056D2] text-white' : 'bg-transparent'" 
+                        @click="switchTab('login')"
+                    >
+                        Connexion
+                    </button>
+                    <button 
+                        class="px-6 py-2 rounded-full transition-colors font-bold"
+                        :class="activeTab === 'register' ? 'bg-[#0056D2] text-white' : 'bg-transparent'"
+                        @click="switchTab('register')"
+                    >
+                        Inscription
+                    </button>
+                </div>
+                <div class="text-center mb-8">
+                    <p class="text-sm text-gray-500">Plongez dans un apprentissage simplifié, libre et accessible.</p>
+                </div>
+
+                <!-- Formulaire de connexion -->
+                <div v-if="activeTab === 'login'" class="space-y-6">
+                    <form @submit.prevent="handleLogin" class="space-y-4">
+                        <div class="form-control" :class="{ 'animate-shake': shakeEmail }">
+                            <input 
+                                type="email"
+                                v-model="email"
+                                placeholder="Adresse Email" 
+                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                required
+                            />
+                        </div>
+
+                        <div class="form-control">
+                            <input 
+                                type="password"
+                                v-model="password"
+                                placeholder="Mot de passe"
+                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                required
+                            />
+                        </div>
+
+                        <div class="text-sm text-right">
+                            <button 
+                                @click="handleForgotPassword" 
+                                type="button"
+                                class="link link-primary cursor-pointer"
+                                :class="{ 'loading': resetLoading }"
+                                :disabled="resetLoading"
+                            >
+                                Mot de passe oublié ?
+                            </button>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button 
+                                v-if="showLoginButton"
+                                type="submit"
+                                class="btn btn-primary rounded-full"
+                                :class="{ 'loading': loading }"
+                            >
+                              <i class="fa-solid fa-sign-in-alt"></i>
+                                Se connecter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Formulaire d'inscription -->
+                <div v-if="activeTab === 'register'" class="space-y-6">
+                    <form @submit.prevent="handleSignUp" class="space-y-4">
+                        <div v-if="errors.general" class="text-red-500 text-sm">
+                            {{ errors.general }}
+                        </div>
+                        
+                        <div class="form-control">
+                            <input 
+                                type="text"
+                                v-model="firstName"
+                                placeholder="Prénom"
+                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                required
+                            />
+                        </div>
+
+                        <div class="form-control">
+                            <input 
+                                type="text"
+                                v-model="lastName"
+                                placeholder="Nom"
+                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                required
+                            />
+                        </div>
+
+                        <div class="form-control" :class="{ 'animate-shake': shakeEmail }">
+                            <input 
+                                type="email"
+                                v-model="email"
+                                placeholder="Adresse Email"
+                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                required
+                            />
+                        </div>
+
+                        <div class="form-control">
+                            <input 
+                                type="password"
+                                v-model="password"
+                                placeholder="Mot de passe"
+                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                required
+                            />
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button 
+                                v-if="showRegisterButton"
+                                type="submit"
+                                class="btn btn-primary rounded-full"
+                                :class="{ 'loading': loading }"
+                            >
+                              <i class="fa-solid fa-user-plus"></i>
+                                S'inscrire
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="text-center mt-2 text-sm">
-          Pas encore de compte ?
-          <a href="/inscription" class="text-blue-600 font-bold hover:underline">
-            Inscrivez-vous
-          </a>
-        </div>
-        <!-- Connexion avec Google et Facebook -->
-        <div class="flex items-center justify-center mt-6">
-          <button
-            class="bg-white border rounded-full p-2 shadow-sm mr-4 hover:shadow-md transition"
-          >
-            <img
-              src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
-              alt="Google"
-              class="w-6 h-6"
-            />
-          </button>
-          <button
-            class="bg-white border rounded-full p-2 shadow-sm hover:shadow-md transition"
-          >
-            <img
-              src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/facebook/facebook-original.svg"
-              alt="Facebook"
-              class="w-6 h-6"
-            />
-          </button>
-        </div>
-      </div>
     </div>
-  </template>
-  
-  <style>
-  /* Ajoute ici les styles globaux si nécessaires */
-  </style>
+</template>
+
+<style>
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.animate-shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+</style>

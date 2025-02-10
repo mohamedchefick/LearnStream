@@ -1,15 +1,9 @@
 <script setup>
-import Header from '../Helper/Header/index.vue';
 import ImgHero from '../../assets/images/img-hero.webp';
 </script>
 
 <template>
-  <main class="bg-white ">
-    <!-- Header -->
-    <div class="mb-32">
-      <Header />
-    </div>
-
+  <main class="bg-blue-50 pt-28">
     <!-- Section principale -->
     <div class="flex flex-col lg:flex-row h-full pb-20">
       <!-- Texte à gauche -->
