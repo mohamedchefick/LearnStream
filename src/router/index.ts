@@ -12,7 +12,10 @@ import emailActivateConfirm from '../views/emailActivateConfirm/index.vue';
 import Profile from '../views/profile/index.vue';
 import Settings from '../views/settings/index.vue';
 import PasswordReset from '../views/passwordReset/index.vue';
-import PageNoFound from '../components/Helper/404.vue'
+import PageNoFound from '../components/Helper/404.vue';
+import About from '../views/about/index.vue';
+import Certificate from '../components/certificate/myCertificate.vue';
+import CheckCertificate from '../components/certificate/checkCertificate.vue';
 
 const routes = [
   {
@@ -210,7 +213,49 @@ const routes = [
       locale: 'fr_FR',
       twitterCard: 'summary_large_image'
     }
-  }
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: About,
+    meta: {
+      title: 'Wisoria - À propos',
+      description: 'Découvrez Wisoria et notre mission.',
+      image: 'https://wisoria.net/wisoria-ico.png', 
+      url: 'https://wisoria.net/about',
+      type: 'website',
+      locale: 'fr_FR',
+      twitterCard: 'summary_large_image'
+    }
+  },
+  {
+    path: '/certificat/:courseId',
+    name: 'Certificate',
+    component: Certificate,
+    meta: {
+      title: 'Wisoria - Votre Certificat',
+      description: 'Consultez et téléchargez votre certificat de réussite Wisoria.',
+      image: 'https://wisoria.net/wisoria-ico.png',
+      url: 'https://wisoria.net/certificat',
+      type: 'website', 
+      locale: 'fr_FR',
+      twitterCard: 'summary_large_image'
+    }
+  },
+  {
+    path: '/certificat/check-courses-certificat/:certificateId',
+    name: 'CheckCertificate',
+    component: CheckCertificate,
+    meta: {
+      title: 'Wisoria - Obtenir votre Certificat',
+      description: 'Obtenez votre certificat de réussite Wisoria.',
+      image: 'https://wisoria.net/wisoria-ico.png',
+      url: 'https://wisoria.net/certificat/get',
+      type: 'website',
+      locale: 'fr_FR', 
+      twitterCard: 'summary_large_image'
+    }
+  },
 ];
 
 const router = createRouter({

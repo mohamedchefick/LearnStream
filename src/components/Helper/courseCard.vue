@@ -1,6 +1,7 @@
 <script setup>
 import categoryIcon from '../../assets/icons/category.png'
 import { API_URL } from '../../../env'
+import illustrationGraduation from '../../assets/images/usely/illustration-graduation-hat_53876-5920.avif'
 
 defineProps({
   id: {
@@ -29,7 +30,8 @@ defineProps({
   },
   image: {
     type: String,
-    required: true
+    required: false,
+    default: illustrationGraduation
   },
   level: {
     type: String,
@@ -48,7 +50,12 @@ defineProps({
   class="bg-white rounded-3xl bg-gray-100 shadow-lg flex flex-col h-full"
   >
     <div class="h-48">
-      <img :src="image.startsWith('http') ? image : API_URL + image" class="w-full h-full object-cover rounded-t-3xl" alt="">
+      <!-- Modification ici pour gérer correctement l'image par défaut -->
+      <img 
+        :src="image ? (image.startsWith('http') ? image : API_URL + image) : illustrationGraduation" 
+        class="w-full h-full object-cover rounded-t-3xl" 
+        alt=""
+      >
     </div>
     <div class="py-2 rounded-b-3xl flex flex-col flex-grow">
       <div class="px-4 mb-2 flex justify-between">

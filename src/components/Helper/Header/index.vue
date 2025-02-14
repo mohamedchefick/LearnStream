@@ -80,11 +80,13 @@ const userData = JSON.parse(localStorage.getItem('userData'));
           >
           Cours
           </router-link>
-          <a
+          <router-link
+            to="/about"
             class="relative cursor-pointer transition duration-300 before:content-[''] before:absolute before:w-0 before:h-[2px] before:bottom-0 before:left-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full"
-          >
+            :class="{ 'font-bold': $route.path === '/about' }"
+            >
             À propos
-          </a>
+          </router-link>
           <router-link to="/contact"
             class="relative cursor-pointer transition duration-300 before:content-[''] before:absolute before:w-0 before:h-[2px] before:bottom-0 before:left-0 before:bg-blue-500 before:transition-all before:duration-300 hover:before:w-full"
             :class="{ 'font-bold': $route.path === '/contact' }"
@@ -98,7 +100,7 @@ const userData = JSON.parse(localStorage.getItem('userData'));
 
       <!-- Inscription Button -->
       <template v-if="userData">
-        <userDrop :image_url="userData.profile_picture || userData.picture_url" :username="userData.first_name + ' ' + userData.last_name" class="hidden lg:block" />
+        <userDrop :image_url="userData.profile_picture || userData.picture_url || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'" :username="userData.first_name + ' ' + userData.last_name" class="hidden lg:block" />
       </template>
       <template v-else>
         <div class="lg:flex hidden gap-2">

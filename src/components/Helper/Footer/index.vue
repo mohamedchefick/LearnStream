@@ -40,8 +40,8 @@ import imgLogo from '../../../assets/images/img-logo.webp'
             <!-- Colonne 4 -->
             <div class="md:col-span-2 lg:col-span-1 space-y-3">
                 <p class="text-black text-xl font-semibold">Contactez-nous</p>
-                <p>Téléphone : +01 56 04 38 80</p>
-                <p>Email: contact@wizoria.com</p>
+                <p>Téléphone : +01 56 54 38 80</p>
+                <p>Email: contact@wizoria.net</p>
                 <div class="flex gap-3 items-center pt-3">
                     <button><img :src="facebook" alt="Facebook"></button>
                     <button><img :src="youtube" alt="YouTube"></button>

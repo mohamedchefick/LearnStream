@@ -10,6 +10,7 @@ const route = useRoute();
 const router = useRouter();
 const quizzData = ref(null);
 const loading = ref(true);
+const submitting = ref(false); // Added for submission loading state
 const userAnswers = ref({});
 const submitted = ref(false);
 const score = ref(0);
@@ -141,6 +142,8 @@ const submitQuiz = async () => {
         return;
     }
 
+    submitting.value = true; // Start loading
+
     const formattedResponses = Object.entries(userAnswers.value).map(([questionId, value]) => {
         const isArray = Array.isArray(value);
         return {
@@ -171,6 +174,8 @@ const submitQuiz = async () => {
     } catch (err) {
         alert("Erreur lors de la soumission.");
         console.error("Erreur lors de la soumission:", err);
+    } finally {
+        submitting.value = false; // Stop loading
     }
 };
 
@@ -228,7 +233,7 @@ onMounted(() => {
                         <h3 class="text-lg text-[#0056D2] mb-0">Compétences à évaluer</h3>
                         <hr class="border-gray-300 mb-4">
                         <div class="text-gray-600 mb-8 space-y-2">
-                            <p v-for="skill in quizzData.skills.split('\n')" :key="skill" class="flex items-center gap-1">
+                            <p v-for="skill in quizzData?.skills?.split('\n') || []" :key="skill" class="flex items-center gap-1">
                                 <span class="bg-[#FFA600] text-white h-6 w-6 rounded-full flex items-center justify-center">
                                     <i class="fa-solid fa-star"></i>
                                 </span>
@@ -284,10 +289,11 @@ onMounted(() => {
                                 <span>Je comprends qu'en cas d'échec, je devrai attendre 24h avant de pouvoir retenter le quiz</span>
                             </label>
                             <button @click="submitQuiz" 
-                                    :disabled="!acceptSubmit || !allQuestionsAnswered"
-                                    :class="{'opacity-50 cursor-not-allowed': !acceptSubmit || !allQuestionsAnswered}"
-                                    class="bg-[#0056D2] text-white px-6 py-3 rounded-xl hover:bg-[#0056D2]/90 transition-colors">
-                                Soumettre le quiz
+                                    :disabled="!acceptSubmit || !allQuestionsAnswered || submitting"
+                                    :class="{'opacity-50 cursor-not-allowed': !acceptSubmit || !allQuestionsAnswered || submitting}"
+                                    class="bg-[#0056D2] text-white px-6 py-3 rounded-xl hover:bg-[#0056D2]/90 transition-colors flex items-center gap-2">
+                                <i v-if="submitting" class="fas fa-spinner fa-spin"></i>
+                                <span>{{ submitting ? 'Soumission en cours...' : 'Soumettre le quiz' }}</span>
                             </button>
                         </div>
                     </div>
@@ -344,7 +350,7 @@ onMounted(() => {
                             </button>
                             
                             <button v-if="score >= 50" 
-                                    @click="router.go(-1)"
+                                @click="router.push(`/lesson/${quizzData.next_item.id}`)"
                                     class="bg-[#0056D2] text-white px-6 py-3 rounded-lg hover:bg-[#0056D2]/90 transition-colors flex items-center gap-2">
                                 Suivant
                                 <i class="fas fa-arrow-right"></i>
@@ -372,7 +378,7 @@ onMounted(() => {
                                 </button>
                                 
                                 <button v-if="score >= 50" 
-                                        @click="router.go(-1)"
+                                    @click="router.push(`/lesson/${quizzData.next_item.id}`)"
                                         class="bg-[#0056D2] text-white px-6 py-3 rounded-lg hover:bg-[#0056D2]/90 transition-colors flex items-center gap-2">
                                     Suivant
                                     <i class="fas fa-arrow-right"></i>

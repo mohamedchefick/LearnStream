@@ -1,5 +1,5 @@
 <script setup>
-import detailsCours from '../../assets/images/img-DetailsCours.webp';
+import detailsCours from '../../assets/images/usely/illustration-graduation-hat_53876-5920.avif';
 import IMGCard from '../../assets/images/img-card.webp';
 </script>
 

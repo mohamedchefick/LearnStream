@@ -1,10 +1,10 @@
 <script setup>
 import Headers from '../Helper/Header/index.vue'
 import footers from '../Helper/Footer/index.vue'
-import detailsCours from '../../assets/images/img-DetailsCours.webp';
+import detailsCours from '../../assets/images/usely/illustration-graduation-hat_53876-5920.avif';
 import iconDecouvrir from '../../assets/icons/decouvrir.svg'
 import imgCour from '../../assets/images/imgCour.png'
-import ImgCertif from '../../assets/images/imgCertif.webp'
+import ImgCertif from '../../assets/images/imgCertif.png'
 import link from '../../assets/icons/linke.svg'
 import evaluation from '../../assets/icons/evaluation.svg'
 import enseignefr from '../../assets/icons/enseignefr.svg'
@@ -277,13 +277,13 @@ const getSkills = () => {
                             </div>
                             <div class="w-full sm:w-auto">
                                 <img :src="evaluation" class="mb-2" alt="">
-                                <h1 class="font-semibold text-sm sm:text-base">Certificat partageable</h1>
-                                <h1 class="text-sm">Ajouter à votre profil Lkd</h1>
+                                <h1 class="font-semibold text-sm sm:text-base">Plusieurs modules</h1>
+                                <h1 class="text-sm">Apprendre à votre rythme</h1>
                             </div>
                             <div class="w-full sm:w-auto">
                                 <img :src="enseignefr" class="mb-2" alt="">
-                                <h1 class="font-semibold text-sm sm:text-base">Certificat partageable</h1>
-                                <h1 class="text-sm">Ajouter à votre profil Lkd</h1>
+                                <h1 class="font-semibold text-sm sm:text-base">Langue</h1>
+                                <h1 class="text-sm">Français</h1>
                             </div>
                         </div>
                     </div>

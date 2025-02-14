@@ -1,4 +1,8 @@
 <script setup>
+import { RouterLink } from 'vue-router';
+import { API_URL } from '../../../env';
+import illustrationGraduation from '../../assets/images/usely/illustration-graduation-hat_53876-5920.avif';
+
 defineProps({
   course: {
     type: Object,
@@ -20,7 +24,7 @@ defineProps({
       <div class="flex items-center gap-4">
         <div class="flex-shrink-0">
           <img 
-            :src="course.course.image" 
+            :src="course.course.image ? (course.course.image.startsWith('http') ? course.course.image : API_URL + course.course.image) : illustrationGraduation"
             :alt="course.course.title"
             class="w-32 h-32 rounded-xl object-cover"
           />
@@ -55,9 +59,14 @@ defineProps({
           </div>
         </div>
       </div>
-      <button v-if="course.status === 'completed'" type="button" class="btn btn-primary text-white font-semibold rounded-2xl">
+      <RouterLink 
+        :to="`/certificat/${course.course.id}`"
+        v-if="course.status === 'completed'" 
+        class="btn btn-primary text-white font-semibold rounded-2xl"
+        @click.stop
+      >
         Voir mon certificat
-      </button>
+      </RouterLink>
     </div>
   </div>
 </template>

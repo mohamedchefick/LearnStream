@@ -3,17 +3,21 @@ import IMGFamily from '../../assets/images/img-fanily.webp';
 import iconSearsh3 from '../../assets/icons/iconSearsh3.svg';
 import { ref, onMounted } from 'vue';
 import { apiRequest } from '../../utils/api';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
 const emit = defineEmits(['search', 'categorySelect']);
 
 const searchQuery = ref('');
 const categories = ref([]);
+const activeCategory = ref(route.query.category || '');
 
 const handleSearch = () => {
   emit('search', searchQuery.value);
 };
 
 const handleCategorySelect = (category) => {
+  activeCategory.value = category.name;
   emit('categorySelect', category.name);
 };
 
@@ -67,7 +71,8 @@ onMounted(async () => {
                 <button 
                     v-for="(category, index) in categories" 
                     :key="index" 
-                    class="px-5 py-2 rounded-full bg-white text-base font-bold shadow-sm hover:text-white transition duration-300"
+                    class="btn btn-ghost px-5 py-2 rounded-full text-base font-bold shadow-sm hover:bg-gray-100 transition duration-300"
+                    :class="{ 'bg-white': activeCategory !== category.name, 'bg-gray-200': activeCategory === category.name }"
                     :style="{ color: category.color }"
                     @click="handleCategorySelect(category.name === 'Tout' ? '' : category)"
                 >

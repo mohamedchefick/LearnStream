@@ -3,6 +3,8 @@ import iconDecouvrir from '../../assets/icons/decouvrir.svg';
 import { ref, onMounted } from 'vue';
 import { apiRequest } from '../../utils/api';
 import { useRouter } from 'vue-router';
+import { API_URL } from '../../../env';
+import illustrationGraduation from '../../assets/images/usely/illustration-graduation-hat_53876-5920.avif';
 
 const router = useRouter();
 const userCourses = ref([]);
@@ -64,7 +66,11 @@ onMounted(() => {
                 @click="handleContinueCourse(course.course.id)"
                 class="bg-white p-4 rounded-3xl shadow-lg flex flex-col h-full cursor-pointer hover:shadow-xl transition-shadow duration-300"
             >
-                <img :src="course.course.image" class="rounded-3xl w-full h-48 object-cover" alt="">
+                <img 
+                    :src="course.course.image ? (course.course.image.startsWith('http') ? course.course.image : API_URL + course.course.image) : illustrationGraduation" 
+                    class="rounded-3xl w-full h-48 object-cover" 
+                    alt=""
+                >
                 <div class="flex flex-col flex-grow p-3">
                     <div class="flex gap-3 items-center font-medium">
                         <span :style="{ color: course.course.category.color }">{{ course.course.category.name }}</span>
