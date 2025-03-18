@@ -33,8 +33,8 @@ const iconMapping = {
   'Cloud Computing': Cloud,
   'Marketing Digital': Mark,
   'Cybersécurité': Cyber,
-  'Gestion de Projet Agile': Gestion,
-  'Machine Learning': Machine
+  'Gestion de Projet': Gestion,
+  'IA': Machine
 };
 
 // Nouveau mapping pour correspondre aux clés de l'API

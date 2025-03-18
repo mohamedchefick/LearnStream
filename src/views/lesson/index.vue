@@ -21,6 +21,11 @@ const fetchLesson = async () => {
         });
         lessonData.value = response.data;
         loading.value = false;
+
+        // Enlever les balises ```html et ``` si elles existent
+        if (lessonData.value.content.startsWith('```html') && lessonData.value.content.endsWith('```')) {
+            lessonData.value.content = lessonData.value.content.slice(7, -3);
+        }
     } catch (error) {
         console.error("Erreur lors du chargement du cours:", error);
         loading.value = false;
@@ -96,7 +101,7 @@ onMounted(() => {
                     ></iframe>
                 </div>
                 <h1 class="text-xl font-bold text-gray-900 mb-6">{{ lessonData.title }}</h1>
-                <div v-html="lessonData.content" class="prose max-w-none"></div>
+                <div class="lesson-content" v-html="lessonData.content"></div>
                 
                 <div class="mt-8 flex flex-row items-center justify-between h-[100px]">
                     <div class="flex items-center gap-2 mb-4">
@@ -141,9 +146,58 @@ onMounted(() => {
 </template>
 
 <style>
+/* Styles pour le contenu de la leçon */
+.lesson-content {
+  @apply text-gray-800 leading-relaxed;
+}
+
+.lesson-content h1 {
+  @apply text-3xl font-bold mb-6 mt-8;
+}
+
+.lesson-content h2 {
+  @apply text-2xl font-semibold mb-4 mt-6;
+}
+
+.lesson-content h3 {
+  @apply text-xl font-semibold mb-3 mt-5;
+}
+
+.lesson-content p {
+  @apply mb-4 text-base;
+}
+
+.lesson-content ul, .lesson-content ol {
+  @apply mb-4 pl-6;
+}
+
+.lesson-content li {
+  @apply mb-2 list-disc;
+}
+
+.lesson-content section {
+  @apply mb-8;
+}
+
+.lesson-content a {
+  @apply text-blue-600 hover:text-blue-800 underline;
+}
+
+.lesson-content blockquote {
+  @apply pl-4 border-l-4 border-gray-300 italic my-4;
+}
+
+.lesson-content table {
+  @apply w-full border-collapse mb-4;
+}
+
+.lesson-content th, .lesson-content td {
+  @apply border border-gray-300 p-2;
+}
+
 /* Bloc de style CSS pour personnaliser les blocs de code */
 pre {
-  background-color: #3c4148ee; /* Gris foncé pour le fond */
+  background-color: #000; /* Gris foncé pour le fond */
   color: #f1f5f9; /* Texte clair */
   padding: 1rem; /* Espacement intérieur */
   border-radius: 0.5rem; /* Bords arrondis */
@@ -158,7 +212,7 @@ pre {
 
 code {
   font-family: 'Fira Code', monospace; /* Police monospace pour le code */
-  color: #d63384; /* Couleur principale pour les mots-clés */
+  color: #ff8c00; /* Couleur principale pour les mots-clés */
 }
 
 pre code {

@@ -151,6 +151,7 @@ const getSkills = () => {
                             <div class="flex gap-4 mb-4">
                                 <h1 class="text-xs sm:text-sm font-semibold text-white"> <i class="fa-regular fa-clock"></i> {{ courseData?.duration || '0' }} heures</h1>
                                 <h1 class="text-xs sm:text-sm font-semibold text-white"> <i class="fa-solid fa-star"></i> {{ courseData?.level || 'Débutant' }}</h1>
+                                <h1 class="text-xs sm:text-sm font-semibold text-white"> <i class="fa-solid fa-language"></i> {{ courseData?.language || 'Non spécifié' }}</h1>
                             </div>
     
                             <button 
@@ -183,21 +184,28 @@ const getSkills = () => {
             </div>
             <div class="mx-4 sm:mx-6 md:mx-20 items-end flex flex-col lg:flex-row lg:justify-between items-center gap-2 -mt-40 hidden lg:flex">
                 <div class="bg-[#497FEE] px-4 sm:px-8 md:px-20 py-6 sm:py-10 rounded-2xl flex flex-wrap lg:flex-nowrap items-start lg:items-center w-full lg:w-2/3 text-white z-10">
-                    <div class="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-6 lg:mb-0">
+                    <div class="w-full sm:w-1/2 lg:w-1/4 mb-4 sm:mb-6 lg:mb-0">
                         <h1 class="font-bold text-base sm:text-lg flex items-center gap-2">
                             <i class="fa-regular fa-clock"></i>
                             Durée du cours
                         </h1>
                         <h1 class="text-xs sm:text-sm">{{ courseData?.duration || '0' }} heures</h1>
                     </div>
-                    <div class="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-6 lg:mb-0">
+                    <div class="w-full sm:w-1/2 lg:w-1/4 mb-4 sm:mb-6 lg:mb-0">
                         <h1 class="font-bold text-base sm:text-lg flex items-center gap-2">
                             <i class="fa-solid fa-star"></i>
                             Niveau
                         </h1>
                         <h1 class="text-xs sm:text-sm">{{ courseData?.level || 'Débutant' }}</h1>
                     </div>
-                    <div class="w-full lg:w-1/3">
+                    <div class="w-full sm:w-1/2 lg:w-1/4 mb-4 sm:mb-6 lg:mb-0">
+                        <h1 class="font-bold text-base sm:text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-language"></i>
+                            Langue
+                        </h1>
+                        <h1 class="text-xs sm:text-sm">{{ courseData?.language || 'Non spécifié' }}</h1>
+                    </div>
+                    <div class="w-full lg:w-1/4">
                         <h1 class="font-bold text-base sm:text-lg flex items-center gap-2">
                             <i class="fa-solid fa-calendar-days"></i>
                             Programme flexible
@@ -258,11 +266,11 @@ const getSkills = () => {
                     </div>
                 </div>
                 <div class="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0">
-                    <div class="text-[#6F6B6B] text-sm sm:text-base w-full md:w-1/2">
+                    <div class="text-[#6F6B6B] text-base sm:text-lg w-full md:w-2/3">
                         <div v-if="courseData" v-html="courseData.description"></div>
                         <div v-else class="animate-pulse">Chargement...</div>
                     </div>    
-                    <div class="w-full md:w-1/2">
+                    <div class="w-full md:w-1/3">
                         <img :src="imgCour" alt="" class="w-full">
                     </div>
                 </div>
@@ -283,7 +291,7 @@ const getSkills = () => {
                             <div class="w-full sm:w-auto">
                                 <img :src="enseignefr" class="mb-2" alt="">
                                 <h1 class="font-semibold text-sm sm:text-base">Langue</h1>
-                                <h1 class="text-sm">Français</h1>
+                                <h1 class="text-sm"> {{ courseData?.language || 'Français' }}</h1>
                             </div>
                         </div>
                     </div>
