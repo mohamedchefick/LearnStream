@@ -10,12 +10,14 @@ import { RouterLink } from 'vue-router';
 const courses = ref([])
 const currentPage = ref(1)
 const totalPages = ref(1)
+const loading = ref(true)
 
 const fetchCourses = async (page = 1) => {
   try {
+    loading.value = true
     const response = await apiRequest({
       method: 'GET',
-      url: `courses/courses/?page_size=4&page=${page}`
+      url: `courses/courses/?page_size=4&page=${page}&popular=true`
     })
     courses.value = response.data.results.map(course => ({
       id: course.id,
@@ -31,6 +33,8 @@ const fetchCourses = async (page = 1) => {
     totalPages.value = Math.ceil(response.data.count / 4)
   } catch (error) {
     console.error('Erreur lors de la récupération des cours:', error)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -69,31 +73,61 @@ onMounted(() => {
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-10 py-10">
-            <div 
-                v-for="(item, index) in courses" 
-                :key="index"
-                class="h-full"
-            >
-                <courseCard 
-                    :id="item.id"
-                    :image="item.img" 
-                    :category="item.category" 
-                    :categoryColor="item.categoryColor"
-                    :title="item.title" 
-                    :rating="item.rating"
-                    :shortdescription="item.shortdescription"
-                    :author="item.author"
-                    :duration="item.duration"
-                    :level="item.level"
+            <!-- Skeleton loader -->
+            <template v-if="loading">
+                <div v-for="n in 4" :key="n" class="bg-white rounded-lg shadow-md p-4 h-[400px] animate-pulse">
+                    <div class="w-full h-48 bg-gray-200 rounded-lg mb-4"></div>
+                    <div class="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
+                    <div class="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+                    <div class="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                    <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+                    <div class="flex justify-between mt-4">
+                        <div class="h-4 bg-gray-200 rounded w-1/4"></div>
+                        <div class="h-4 bg-gray-200 rounded w-1/4"></div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Empty state -->
+            <template v-else-if="courses.length === 0">
+                <div class="col-span-full flex flex-col h-96 items-center justify-center py-12">
+                    <div class="text-6xl mb-4">📚</div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-2">Aucun cours disponible</h3>
+                    <p class="text-gray-600 text-center">
+                        Il n'y a pas encore de cours populaires disponibles.
+                        <br>Revenez plus tard !
+                    </p>
+                </div>
+            </template>
+
+            <!-- Actual content -->
+            <template v-else>
+                <div 
+                    v-for="(item, index) in courses" 
+                    :key="index"
                     class="h-full"
-                />
-            </div>
+                >
+                    <courseCard 
+                        :id="item.id"
+                        :image="item.img" 
+                        :category="item.category" 
+                        :categoryColor="item.categoryColor"
+                        :title="item.title" 
+                        :rating="item.rating"
+                        :shortdescription="item.shortdescription"
+                        :author="item.author"
+                        :duration="item.duration"
+                        :level="item.level"
+                        class="h-full"
+                    />
+                </div>
+            </template>
         </div>
 
-        <div class="flex justify-end gap-4">
+        <div class="flex justify-end gap-4" v-if="courses.length > 0">
             <button
                 @click="prevPage"
-                :disabled="currentPage === 1"
+                :disabled="currentPage === 1 || loading"
                 class="bg-white shadow-md rounded-lg p-2 hover:bg-gray-100 transition hover:scale-105 duration-300 disabled:opacity-50"
             >
                 <img :src="Precedent" alt="Précédent" class="w-5 h-5" />
@@ -101,7 +135,7 @@ onMounted(() => {
 
             <button
                 @click="nextPage"
-                :disabled="currentPage === totalPages"
+                :disabled="currentPage === totalPages || loading"
                 class="bg-[#0056D2] shadow-md rounded-lg p-2 transition hover:scale-105 duration-300 disabled:opacity-50"
             >
                 <img :src="Suivant" alt="Suivant" class="w-5 h-5" />

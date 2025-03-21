@@ -40,6 +40,9 @@ const navigateToQuiz = (quizId) => {
     router.push(`/quiz/${quizId}`);
 };
 
+const userData = localStorage.getItem('userData');
+const isUserDataAvailable = !!userData;
+
 onMounted(() => {
     fetchCourseDetails();
 });
@@ -48,7 +51,12 @@ onMounted(() => {
 <template>
     <div class="px-6 sm:px-12 lg:px-24 xl:px-28">
         <div v-if="loading" class="text-center py-8">
-            Chargement...
+            <div class="animate-pulse">
+                <div class="h-4 bg-gray-300 rounded w-1/4 mb-4"></div>
+                <div class="h-4 bg-gray-300 rounded w-3/4 mb-4"></div>
+                <div class="h-4 bg-gray-300 rounded w-full mb-4"></div>
+                <div class="h-4 bg-gray-300 rounded w-full mb-4"></div>
+            </div>
         </div>
         <div v-else-if="course" class="py-8">
             <h2 class="text-2xl font-bold mb-6">Plan du cours</h2>
@@ -66,7 +74,7 @@ onMounted(() => {
                                 openChapters[chapter.id] ? 'fa-chevron-down' : 'fa-chevron-right',
                                 'transition-transform duration-300'
                             ]"></i>
-                            <h3 class="text-xl font-semibold">Chapitre {{ chapterIndex + 1 }} : {{ chapter.title }}</h3>
+                            <h3 class="lg:text-lg font-semibold">Chapitre {{ chapterIndex + 1 }} : {{ chapter.title }}</h3>
                         </div>
                         <div v-if="chapter.progress?.completed" 
                              class="flex items-center text-green-500 gap-2">
@@ -78,17 +86,17 @@ onMounted(() => {
                     <div v-show="openChapters[chapter.id]" 
                          class="border-t p-6 space-y-3 transition-all duration-300">
                         <div v-for="(lesson, lessonIndex) in chapter.lessons" :key="lesson.id"
-                             class="flex items-center gap-3 text-gray-700 pl-4 cursor-pointer"
-                             @click="navigateToLesson(lesson.id)">
+                             class="flex items-center gap-3 text-gray-700 pl-4"
+                             @click="isUserDataAvailable ? navigateToLesson(lesson.id) : null">
                             <i class="fas fa-play-circle text-blue-500"></i>
-                            <span>Leçon {{ lessonIndex + 1 }} : {{ lesson.title }}</span>
+                            <span class="text-sm md:text-base">Leçon {{ lessonIndex + 1 }} : {{ lesson.title }}</span>
                         </div>
                         
                         <div v-if="chapter.quiz" 
-                             class="flex items-center gap-3 text-gray-700 pl-4 mt-2 cursor-pointer"
-                             @click="navigateToQuiz(chapter.quiz.id)">
-                            <i class="fas fa-question-circle text-purple-500"></i>
-                            <span>Quiz : {{ chapter.quiz.title }}</span>
+                             class="flex items-center gap-3 text-gray-700 pl-4 mt-2"
+                             @click="isUserDataAvailable ? navigateToQuiz(chapter.quiz.id) : null">
+                            <i class="fas fa-question-circle text-orange-400"></i>
+                            <span class="text-sm md:text-base">Quiz : {{ chapter.quiz.title }}</span>
                             <span v-if="chapter.quiz.result" 
                                   class="text-sm text-green-500 ml-2">
                                 ({{ chapter.quiz.result.percentage }}%)

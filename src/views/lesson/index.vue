@@ -12,15 +12,17 @@ const lessonData = ref(null);
 const loading = ref(true);
 const completedLesson = ref(false);
 const lessonCompleted = ref(false);
+const showAside = ref(false); // Add state for mobile aside visibility
 
 const fetchLesson = async () => {
+    loading.value = true; // Mettre loading à true avant de charger
     try {
         const response = await apiRequest({ 
             method: 'GET', 
             url: `courses/lessons/${route.params.id}/` 
         });
         lessonData.value = response.data;
-        loading.value = false;
+        lessonCompleted.value = lessonData.value.completed || false;
 
         // Enlever les balises ```html et ``` si elles existent
         if (lessonData.value.content.startsWith('```html') && lessonData.value.content.endsWith('```')) {
@@ -28,7 +30,8 @@ const fetchLesson = async () => {
         }
     } catch (error) {
         console.error("Erreur lors du chargement du cours:", error);
-        loading.value = false;
+    } finally {
+        loading.value = false; // Mettre loading à false dans tous les cas
     }
 };
 
@@ -65,6 +68,10 @@ const handleNext = async (lessonId) => {
     }
 };
 
+const toggleAside = () => {
+    showAside.value = !showAside.value;
+};
+
 const courseId = computed(() => lessonData.value?.course_id);
 
 watch(
@@ -74,11 +81,14 @@ watch(
       fetchLesson();
       lessonCompleted.value = false;
     }
-  }
+  },
+  { immediate: true } // Exécuter immédiatement au montage
 );
 
 onMounted(() => {
-    fetchLesson();
+    if (route.params.id) {
+        fetchLesson();
+    }
 });
 </script>
 
@@ -86,10 +96,29 @@ onMounted(() => {
     <ScrollToTop />
     <div class="min-h-screen flex flex-col">
         <Headers />
-        <div class="flex mt-28 px-4 md:px-8 lg:px-16 gap-20">
-            <div class="flex-1">
-                <Aside v-if="courseId" :courseId="courseId" />
+        <div class="flex mt-28 px-4 md:px-8 lg:px-16 gap-20 relative">
+            <!-- Mobile Aside Toggle Button -->
+            <button 
+                v-if="courseId" 
+                @click="toggleAside"
+                class="fixed bottom-4 right-4 z-50 lg:hidden h-10 w-10 rounded-full shadow-xl bg-[#FFF]/50">
+                <i :class="showAside ? 'fa-times' : 'fa-bars'" class="fas"></i>
+            </button>
+
+            <!-- Mobile Aside -->
+            <div v-if="courseId" 
+                 :class="{'translate-x-0': showAside, '-translate-x-full': !showAside}"
+                 class="fixed inset-0 z-40 lg:hidden bg-white transition-transform duration-300 ease-in-out">
+                <div class="h-full overflow-y-auto pt-20">
+                    <Aside :courseId="courseId" />
+                </div>
             </div>
+
+            <!-- Desktop Aside -->
+            <div v-if="courseId" class="hidden lg:block flex-1">
+                <Aside :courseId="courseId" />
+            </div>
+
             <main v-if="!loading" class="flex-[2] max-w-7xl mx-auto w-full">
                 <div v-if="lessonData.video_id" class="video-container mb-8">
                     <iframe 
@@ -103,7 +132,7 @@ onMounted(() => {
                 <h1 class="text-xl font-bold text-gray-900 mb-6">{{ lessonData.title }}</h1>
                 <div class="lesson-content" v-html="lessonData.content"></div>
                 
-                <div class="mt-8 flex flex-row items-center justify-between h-[100px]">
+                <div v-if="lessonData.is_enrolled" class="mt-8 flex flex-row items-center justify-between h-[100px]">
                     <div class="flex items-center gap-2 mb-4">
                         <input 
                             type="checkbox" 
@@ -138,8 +167,8 @@ onMounted(() => {
 
                 </div>
             </main>
-            <div v-else class="flex-grow flex items-center justify-center">
-                <div class="text-xl text-gray-600">Chargement...</div>
+            <div v-else class="flex-[2] flex items-center justify-center min-h-[500px]">
+                <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-[#0056D2]"></div>
             </div>
         </div>
     </div>

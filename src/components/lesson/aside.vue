@@ -16,6 +16,14 @@ const props = defineProps({
 const loading = ref(true);
 const course = ref(null);
 
+// Vérifier si l'utilisateur est connecté
+const checkUserConnection = () => {
+  const userData = localStorage.getItem('userData');
+  if (!userData) {
+    router.push(`/courseDetail/${props.courseId}`);
+  }
+};
+
 const fetchCourseDetails = async () => {
   try {
     const response = await apiRequest({
@@ -53,26 +61,62 @@ const isActive = (type, id) => {
   return false;
 };
 
-watch(
-  () => route.path,
-  () => {
-    fetchCourseDetails();
-  }
-);
-
 onMounted(() => {
+  checkUserConnection(); // Vérifier la connexion de l'utilisateur lors du montage
   fetchCourseDetails();
 });
 </script>
 
 <template>
   <div>
-    <div class="fixed w-1/4 pe-4 bg-white z-[1] h-[calc(100vh-120px)] flex flex-col">
-        <div v-if="loading" class="text-center py-4">
-          Chargement...
-        </div>
+    <div class="fixed w-full lg:w-1/4 pe-4 bg-white z-[1] h-[calc(100vh-120px)] flex flex-col lg:mt-0 mt-5 lg:ms-0 ms-1">
+          <div v-if="loading" class="fixed w-full lg:w-1/4 pe-4 bg-white z-[1] h-[calc(100vh-120px)] flex flex-col">
+            <div class="animate-pulse space-y-4">
+              <!-- Titre du cours -->
+              <div class="h-8 bg-gray-200 rounded-full w-3/4 mb-6"></div>
+
+              <!-- Répéter pour 3 chapitres (exemple) -->
+              <div v-for="index in 3" :key="index" class="rounded-lg border">
+                <!-- En-tête du chapitre -->
+                <div class="p-3 space-y-2">
+                  <div class="h-3 bg-gray-200 rounded-full w-1/4"></div>
+                  <div class="h-5 bg-gray-200 rounded-full w-3/4"></div>
+                </div>
+
+                <div class="border-t p-3 space-y-4">
+                  <!-- 2 leçons par chapitre -->
+                  <div v-for="lessonIndex in 2" :key="lessonIndex" class="space-y-4">
+                    <div class="flex items-center gap-2">
+                      <!-- Image placeholder -->
+                      <div class="w-20 h-16 bg-gray-200 rounded-lg"></div>
+                      <div class="flex-1 space-y-2">
+                        <div class="h-3 bg-gray-200 rounded-full w-1/4"></div>
+                        <div class="h-4 bg-gray-200 rounded-full w-3/4"></div>
+                      </div>
+                      <!-- Icône check -->
+                      <div class="w-5 h-5 bg-gray-200 rounded-full"></div>
+                    </div>
+                  </div>
+
+                  <!-- Quiz -->
+                  <div class="flex items-center gap-2">
+                    <div class="w-12 h-12 bg-gray-200 rounded-full"></div>
+                    <div class="flex-1 space-y-2">
+                      <div class="h-3 bg-gray-200 rounded-full w-1/4"></div>
+                      <div class="h-4 bg-gray-200 rounded-full w-1/2"></div>
+                    </div>
+                    <!-- Résultats quiz -->
+                    <div class="space-y-1">
+                      <div class="w-5 h-5 bg-gray-200 rounded-full ml-auto"></div>
+                      <div class="h-3 bg-gray-200 rounded-full w-8"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         <div v-else-if="course" class="flex flex-col h-full">
-          <h2 class="text-xl font-extrabold mb-4 text-[#0056D2] bg-white w-full">{{ course.title }}</h2>
+          <router-link :to="`/courseDetail/${course.id}`" class="text-xl font-extrabold mb-4 text-[#0056D2] bg-white w-full">{{ course.title }}</router-link>
           <div class="space-y-4 flex-1 overflow-y-auto">
             <div v-for="(chapter, chapterIndex) in course.chapters" :key="chapter.id" 
                  class="rounded-lg border">

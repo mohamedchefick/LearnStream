@@ -11,7 +11,7 @@ export default {
     data() {
         return {
             email: "",
-            password: "",
+            password: "", 
             firstName: "",
             lastName: "",
             iconDecouvrir,
@@ -196,10 +196,10 @@ export default {
 </script>
 
 <template>
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-5xl flex justify-center space-x-10 flex-row">
+    <div class="min-h-screen mt-8 flex items-center justify-center p-4">
+        <div class="w-full max-w-5xl flex flex-col lg:flex-row justify-center lg:space-x-10">
             <!-- Section image -->
-            <div class="w-1/2 rounded-3xl hidden lg:block overflow-hidden">
+            <div class="w-full lg:w-1/2 rounded-3xl hidden lg:block overflow-hidden">
                 <img 
                     :src="activeTab === 'login' ? loginImage : registerImage"
                     class="w-full h-full object-cover"
@@ -208,20 +208,23 @@ export default {
             </div>
 
             <!-- Section formulaire -->
-            <div class="w-full flex flex-col md:w-2/3 lg:w-1/2 p-8">
+            <div class="w-full lg:w-1/2 flex flex-col p-4 lg:p-8">
                 <!-- Tabs -->
-                <h2 class="mb-5 text-center font-semibold">Bienvenue sur <img :src="logo" class="h-10 inline-block" /></h2>
+                <h2 class="mb-5 text-center font-semibold flex items-center justify-center">
+                    Bienvenue sur 
+                    <img :src="logo" class="h-6 sm:h-8 lg:h-10 ml-2 inline-block" />
+                </h2>
 
                 <div class="flex bg-blue-200 rounded-full mx-auto justify-center mb-8 p-2 gap-2">
                     <button 
-                        class="px-6 py-2 rounded-full transition-colors font-bold"
+                        class="px-4 sm:px-6 py-2 rounded-full transition-colors text-sm sm:text-base font-bold"
                         :class="activeTab === 'login' ? 'bg-[#0056D2] text-white' : 'bg-transparent'" 
                         @click="switchTab('login')"
                     >
                         Connexion
                     </button>
                     <button 
-                        class="px-6 py-2 rounded-full transition-colors font-bold"
+                        class="px-4 sm:px-6 py-2 rounded-full transition-colors text-sm sm:text-base font-bold"
                         :class="activeTab === 'register' ? 'bg-[#0056D2] text-white' : 'bg-transparent'"
                         @click="switchTab('register')"
                     >
@@ -229,18 +232,18 @@ export default {
                     </button>
                 </div>
                 <div class="text-center mb-8">
-                    <p class="text-sm text-gray-500">Plongez dans un apprentissage simplifié, libre et accessible.</p>
+                    <p class="text-xs sm:text-sm text-gray-500">Plongez dans un apprentissage simplifié, libre et accessible.</p>
                 </div>
 
                 <!-- Formulaire de connexion -->
-                <div v-if="activeTab === 'login'" class="space-y-6">
+                <div v-if="activeTab === 'login'" class="space-y-4 sm:space-y-6">
                     <form @submit.prevent="handleLogin" class="space-y-4">
                         <div class="form-control" :class="{ 'animate-shake': shakeEmail }">
                             <input 
                                 type="email"
                                 v-model="email"
                                 placeholder="Adresse Email" 
-                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                class="w-full input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none text-sm sm:text-base p-2 sm:p-3"
                                 required
                             />
                         </div>
@@ -250,12 +253,12 @@ export default {
                                 type="password"
                                 v-model="password"
                                 placeholder="Mot de passe"
-                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                class="w-full input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none text-sm sm:text-base p-2 sm:p-3"
                                 required
                             />
                         </div>
 
-                        <div class="text-sm text-right">
+                        <div class="text-xs sm:text-sm text-right">
                             <button 
                                 @click="handleForgotPassword" 
                                 type="button"
@@ -271,10 +274,10 @@ export default {
                             <button 
                                 v-if="showLoginButton"
                                 type="submit"
-                                class="btn btn-primary rounded-full"
+                                class="btn btn-primary rounded-full text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3"
                                 :class="{ 'loading': loading }"
                             >
-                              <i class="fa-solid fa-sign-in-alt"></i>
+                              <i class="fa-solid fa-sign-in-alt mr-2"></i>
                                 Se connecter
                             </button>
                         </div>
@@ -282,9 +285,9 @@ export default {
                 </div>
 
                 <!-- Formulaire d'inscription -->
-                <div v-if="activeTab === 'register'" class="space-y-6">
+                <div v-if="activeTab === 'register'" class="space-y-4 sm:space-y-6">
                     <form @submit.prevent="handleSignUp" class="space-y-4">
-                        <div v-if="errors.general" class="text-red-500 text-sm">
+                        <div v-if="errors.general" class="text-red-500 text-xs sm:text-sm">
                             {{ errors.general }}
                         </div>
                         
@@ -293,7 +296,7 @@ export default {
                                 type="text"
                                 v-model="firstName"
                                 placeholder="Prénom"
-                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                class="w-full input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none text-sm sm:text-base p-2 sm:p-3"
                                 required
                             />
                         </div>
@@ -303,7 +306,7 @@ export default {
                                 type="text"
                                 v-model="lastName"
                                 placeholder="Nom"
-                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                class="w-full input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none text-sm sm:text-base p-2 sm:p-3"
                                 required
                             />
                         </div>
@@ -313,7 +316,7 @@ export default {
                                 type="email"
                                 v-model="email"
                                 placeholder="Adresse Email"
-                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                class="w-full input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none text-sm sm:text-base p-2 sm:p-3"
                                 required
                             />
                         </div>
@@ -323,7 +326,7 @@ export default {
                                 type="password"
                                 v-model="password"
                                 placeholder="Mot de passe"
-                                class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none"
+                                class="w-full input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none text-sm sm:text-base p-2 sm:p-3"
                                 required
                             />
                         </div>
@@ -332,10 +335,10 @@ export default {
                             <button 
                                 v-if="showRegisterButton"
                                 type="submit"
-                                class="btn btn-primary rounded-full"
+                                class="btn btn-primary rounded-full text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3"
                                 :class="{ 'loading': loading }"
                             >
-                              <i class="fa-solid fa-user-plus"></i>
+                              <i class="fa-solid fa-user-plus mr-2"></i>
                                 S'inscrire
                             </button>
                         </div>

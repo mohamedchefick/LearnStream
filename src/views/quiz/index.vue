@@ -8,9 +8,9 @@ import ScrollToTop from '../../components/Helper/scrollToTop.vue';
 
 const route = useRoute();
 const router = useRouter();
-const quizzData = ref(null);
+const quizData = ref(null);
 const loading = ref(true);
-const submitting = ref(false); // Added for submission loading state
+const submitting = ref(false);
 const userAnswers = ref({});
 const submitted = ref(false);
 const score = ref(0);
@@ -20,17 +20,18 @@ const showModal = ref(false);
 const remainingTime = ref(null);
 const canRetake = ref(true);
 const acceptSubmit = ref(false);
+const isAuthorized = ref(true); // Add new state for authorization
+const showAside = ref(false); // Add state for mobile aside visibility
 const countdown = ref({
     hours: 0,
     minutes: 0,
     seconds: 0
 });
 
-// Nouvelle computed property pour vérifier si toutes les questions ont une réponse
 const allQuestionsAnswered = computed(() => {
-    if (!quizzData.value) return false;
+    if (!quizData.value) return false;
     
-    return quizzData.value.questions.every(question => {
+    return quizData.value.questions.every(question => {
         const answer = userAnswers.value[question.id];
         if (question.question_type === 'select') {
             return Array.isArray(answer) && answer.length > 0;
@@ -63,7 +64,6 @@ const calculateRemainingTime = (completedAt) => {
         remainingTime.value = `${countdown.value.hours}:${countdown.value.minutes}:${countdown.value.seconds}`;
         canRetake.value = false;
         
-        // Mettre à jour le compte à rebours toutes les secondes
         setTimeout(() => {
             calculateRemainingTime(completedAt);
         }, 1000);
@@ -73,9 +73,9 @@ const calculateRemainingTime = (completedAt) => {
     }
 };
 
-const fetchQuizz = async () => {
+const fetchQuiz = async () => {
+    loading.value = true;
     try {
-        // Vérifier si l'utilisateur a déjà fait le quiz
         try {
             const checkResponse = await apiRequest({
                 method: 'GET',
@@ -91,47 +91,47 @@ const fetchQuizz = async () => {
                 quizGlobalStatus.value = true;
                 score.value = checkResponse.data.result.percentage;
                 
-                // Vérifier le temps écoulé depuis la dernière soumission
                 calculateRemainingTime(checkResponse.data.result.completed_at);
             }
         } catch (error) {
-            // Continuer si quiz/check retourne 404
-            if (error.response?.status !== 404) {
+            if (error.response?.status === 401) {
+                isAuthorized.value = false;
+            } else if (error.response?.status !== 404) {
                 throw error;
             }
         }
 
-        // Récupérer les informations du quiz
+        // Continue fetching quiz data even if unauthorized
         const response = await apiRequest({ 
             method: 'GET', 
             url: `quiz/get/${route.params.id}/` 
         });
-        quizzData.value = response.data;
-        loading.value = false;
+        quizData.value = response.data;
 
-        // Récupérer les réponses sauvegardées du localStorage si elles existent
-        const savedAnswers = localStorage.getItem(`quiz_${route.params.id}_answers`);
-        if (savedAnswers && !submitted.value) {
-            userAnswers.value = JSON.parse(savedAnswers);
-        } else {
-            // Initialiser les réponses de l'utilisateur
-            quizzData.value.questions.forEach(question => {
-                if (question.question_type === 'select') {
-                    userAnswers.value[question.id] = [];
-                } else {
-                    userAnswers.value[question.id] = null;
-                }
-            });
+        // Only set up answers if the user is authorized
+        if (isAuthorized.value) {
+            const savedAnswers = localStorage.getItem(`quiz_${route.params.id}_answers`);
+            if (savedAnswers && !submitted.value) {
+                userAnswers.value = JSON.parse(savedAnswers);
+            } else {
+                quizData.value.questions.forEach(question => {
+                    if (question.question_type === 'select') {
+                        userAnswers.value[question.id] = [];
+                    } else {
+                        userAnswers.value[question.id] = null;
+                    }
+                });
+            }
         }
     } catch (error) {
-        console.error("Erreur lors du chargement du quizz:", error);
+        console.error("Erreur lors du chargement du quiz:", error);
+    } finally {
         loading.value = false;
     }
 };
 
-// Sauvegarder les réponses dans le localStorage à chaque modification
 watch(userAnswers, (newAnswers) => {
-    if (!submitted.value) {
+    if (!submitted.value && isAuthorized.value) {
         localStorage.setItem(`quiz_${route.params.id}_answers`, JSON.stringify(newAnswers));
     }
 }, { deep: true });
@@ -142,7 +142,7 @@ const submitQuiz = async () => {
         return;
     }
 
-    submitting.value = true; // Start loading
+    submitting.value = true;
 
     const formattedResponses = Object.entries(userAnswers.value).map(([questionId, value]) => {
         const isArray = Array.isArray(value);
@@ -169,13 +169,12 @@ const submitQuiz = async () => {
         score.value = response.data.result.percentage;
         calculateRemainingTime(response.data.result.completed_at);
         
-        // Supprimer les réponses du localStorage après la soumission
         localStorage.removeItem(`quiz_${route.params.id}_answers`);
     } catch (err) {
         alert("Erreur lors de la soumission.");
         console.error("Erreur lors de la soumission:", err);
     } finally {
-        submitting.value = false; // Stop loading
+        submitting.value = false;
     }
 };
 
@@ -189,20 +188,34 @@ const resetQuiz = () => {
     showModal.value = false;
     quizGlobalStatus.value = false;
     acceptSubmit.value = false;
-    // Réinitialiser les réponses
-    quizzData.value.questions.forEach(question => {
+    quizData.value.questions.forEach(question => {
         if (question.question_type === 'select') {
             userAnswers.value[question.id] = [];
         } else {
             userAnswers.value[question.id] = null;
         }
     });
-    // Supprimer les réponses du localStorage lors de la réinitialisation
     localStorage.removeItem(`quiz_${route.params.id}_answers`);
 };
 
+const toggleAside = () => {
+    showAside.value = !showAside.value;
+};
+
+watch(
+  () => route.params.id,
+  (newId) => {
+    if (newId) {
+      fetchQuiz();
+    }
+  },
+  { immediate: true }
+);
+
 onMounted(() => {
-    fetchQuizz();
+    if (route.params.id) {
+        fetchQuiz();
+    }
 });
 </script>
 
@@ -210,16 +223,34 @@ onMounted(() => {
     <ScrollToTop />
     <div class="min-h-screen flex flex-col">
         <Headers />
-        <div class="flex mt-28 px-4 md:px-8 lg:px-16 gap-20">
-            <div class="flex-1">
-                <Aside v-if="quizzData?.course_id" :courseId="quizzData.course_id" />
+        <div class="flex mt-28 px-4 md:px-8 lg:px-16 gap-20 relative">
+            <!-- Mobile Aside Toggle Button -->
+            <button 
+                v-if="isAuthorized && quizData?.course_id" 
+                @click="toggleAside"
+                class="fixed bottom-4 right-4 z-50 lg:hidden h-10 w-10 rounded-full shadow-xl bg-[#FFF]/50">
+                <i :class="showAside ? 'fa-times' : 'fa-bars'" class="fas"></i>
+            </button>
+
+            <!-- Mobile Aside -->
+            <div v-if="isAuthorized && quizData?.course_id" 
+                 :class="{'translate-x-0': showAside, '-translate-x-full': !showAside}"
+                 class="fixed inset-0 z-40 lg:hidden bg-white transition-transform duration-300 ease-in-out">
+                <div class="h-full overflow-y-auto pt-20">
+                <Aside :courseId="quizData.course_id" />
+                </div>
+            </div>
+
+            <!-- Desktop Aside -->
+            <div v-if="isAuthorized && quizData?.course_id" class="hidden lg:block flex-1">
+                <Aside :courseId="quizData.course_id" />
             </div>
             
             <main v-if="!loading" class="flex-[2] max-w-7xl mx-auto w-full">
-                <div class="bg-white">
-                    <h1 class="text-2xl font-bold mb-4">{{ quizzData.chapter_title }}</h1>
+                <div v-if="isAuthorized && quizData?.is_enrolled" class="bg-white">
+                    <h1 class="text-2xl font-bold mb-4">{{ quizData.chapter_title }}</h1>
                     <div class="flex items-center justify-between mb-4">
-                        <h1 class="text-xl text-[#0056D2] font-bold">{{ quizzData.title }}</h1>
+                        <h1 class="text-xl text-[#0056D2] font-bold">{{ quizData.title }}</h1>
                         <div v-if="submitted" class="flex items-center gap-2">
                             <span class="text-lg font-semibold" :class="score >= 50 ? 'text-green-600' : 'text-red-600'">
                                 Score: {{ Math.round(score) }}%
@@ -233,7 +264,7 @@ onMounted(() => {
                         <h3 class="text-lg text-[#0056D2] mb-0">Compétences à évaluer</h3>
                         <hr class="border-gray-300 mb-4">
                         <div class="text-gray-600 mb-8 space-y-2">
-                            <p v-for="skill in quizzData?.skills?.split('\n') || []" :key="skill" class="flex items-center gap-1">
+                            <p v-for="skill in quizData?.skills?.split('\n') || []" :key="skill" class="flex items-center gap-1">
                                 <span class="bg-[#FFA600] text-white h-6 w-6 rounded-full flex items-center justify-center">
                                     <i class="fa-solid fa-star"></i>
                                 </span>
@@ -246,12 +277,12 @@ onMounted(() => {
                         <h3 class="text-lg text-[#0056D2] mb-0">Description</h3>
                         <hr class="border-gray-300 mb-4">
                         <div class="text-gray-600 mb-8 space-y-2">
-                            <p class="text-gray-600 mb-8">{{ quizzData.description }}</p>
+                            <p class="text-gray-600 mb-8">{{ quizData.description }}</p>
                         </div>
                     </div>
 
                     <div v-if="!submitted" class="space-y-8">
-                        <div v-for="(question, index) in quizzData.questions" :key="question.id">
+                        <div v-for="(question, index) in quizData.questions" :key="question.id">
                             <h3 class="font-semibold text-[#0056D2] mb-0">Question {{ index + 1 }}</h3>
                             <hr class="border-gray-300 mb-4">
                             <p class="font-semibold mb-4">{{ question.text }}</p>
@@ -283,7 +314,7 @@ onMounted(() => {
                             <i class="fas fa-info-circle text-lg"></i>
                             Veuillez répondre à toutes les questions avant de soumettre.
                         </p>
-                        <div class="flex flex-row justify-between items-center gap-4 py-4">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-4 py-4">
                             <label class="flex items-center gap-2 text-gray-700">
                                 <input type="checkbox" v-model="acceptSubmit" class="checkbox checkbox-primary">
                                 <span>Je comprends qu'en cas d'échec, je devrai attendre 24h avant de pouvoir retenter le quiz</span>
@@ -299,7 +330,7 @@ onMounted(() => {
                     </div>
 
                     <div v-else class="space-y-8">
-                        <div v-for="(question, index) in quizzData.questions" :key="question.id">
+                        <div v-for="(question, index) in quizData.questions" :key="question.id">
                             <div class="flex items-center gap-2">
                                 <h3 class="font-semibold text-[#0056D2] mb-0">Question {{ index + 1 }}</h3>
                                 <span v-if="getQuestionStatus(question.id) === 'success'" class="text-green-600">
@@ -310,9 +341,13 @@ onMounted(() => {
                                 </span>
                             </div>
                             <hr class="border-gray-300 mb-4">
-                            <p class="font-semibold mb-4">{{ question.text }}</p>
+                            <p class="font-semibold">{{ question.text }}</p>
+                            <p v-if="question.question_type !== 'radio'" class="text-sm text-gray-500">
+                                <i class="fas fa-info-circle"></i>
+                                Plusieurs réponses peuvent être valables
+                            </p>
                             
-                            <div v-if="question.question_type === 'radio'" class="space-y-3">
+                            <div v-if="question.question_type === 'radio'" class="space-y-3 mt-4">
                                 <div v-for="option in question.options" :key="option.id" class="flex items-center space-x-3">
                                     <input type="radio" disabled :checked="userAnswers[question.id] === option.id" class="form-radio opacity-50">
                                     <span class="text-gray-500">{{ option.text }}</span>
@@ -327,7 +362,7 @@ onMounted(() => {
                             </div>
                         </div>
 
-                        <div class="flex justify-end gap-4 py-4">
+                        <div class="flex flex-col md:flex-row justify-end gap-4 py-4">
                             <div v-if="!canRetake" class="bg-gray-100 rounded-lg px-4 py-2 flex items-center mr-4">
                                 <div class="text-gray-700">
                                     <i class="fas fa-clock mr-2"></i>
@@ -350,7 +385,7 @@ onMounted(() => {
                             </button>
                             
                             <button v-if="score >= 50" 
-                                @click="router.push(`/lesson/${quizzData.next_item.id}`)"
+                                @click="router.push(`/lesson/${quizData.next_item.id}`)"
                                     class="bg-[#0056D2] text-white px-6 py-3 rounded-lg hover:bg-[#0056D2]/90 transition-colors flex items-center gap-2">
                                 Suivant
                                 <i class="fas fa-arrow-right"></i>
@@ -378,7 +413,7 @@ onMounted(() => {
                                 </button>
                                 
                                 <button v-if="score >= 50" 
-                                    @click="router.push(`/lesson/${quizzData.next_item.id}`)"
+                                    @click="router.push(`/lesson/${quizData.next_item.id}`)"
                                         class="bg-[#0056D2] text-white px-6 py-3 rounded-lg hover:bg-[#0056D2]/90 transition-colors flex items-center gap-2">
                                     Suivant
                                     <i class="fas fa-arrow-right"></i>
@@ -401,10 +436,22 @@ onMounted(() => {
                         </div>
                     </div>
                 </div>
+                <!-- Update condition to show unauthorized message -->
+                <div v-else class="bg-white p-8 rounded-lg text-center">
+                    <i class="fas fa-lock text-6xl text-gray-300 mb-6"></i>
+                    <h2 class="text-2xl font-bold mb-4">Accès restreint</h2>
+                    <p class="text-gray-600 mb-6">Vous devez être inscrit au cours pour accéder à ce quiz.</p>
+                    <button 
+                        v-if="isAuthorized"
+                        @click="router.push(`/courseDetail/${quizData.course_id}`)"
+                        class="bg-[#0056D2] text-white px-6 py-3 rounded-lg hover:bg-[#0056D2]/90 transition-colors">
+                        S'inscrire au cours
+                    </button>
+                </div>
             </main>
             
-            <div v-else class="flex-grow flex items-center justify-center">
-                <div class="text-xl text-gray-600">Chargement...</div>
+            <div v-else class="flex-[2] flex items-center justify-center min-h-[500px]">
+                <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-[#0056D2]"></div>
             </div>
         </div>
     </div>

@@ -159,9 +159,9 @@ export default {
 
 <template>
     <div class="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-        <div class="w-full max-w-5xl flex justify-center space-x-10">
+        <div class="w-full max-w-5xl flex flex-col lg:flex-row justify-center lg:space-x-10">
             <!-- Section image -->
-            <div class="w-1/2 rounded-3xl hidden lg:block">
+            <div class="w-full lg:w-1/2 rounded-3xl hidden lg:block">
                 <img 
                     :src="resetImage"
                     class="w-full h-full object-cover rounded-3xl"
@@ -170,9 +170,9 @@ export default {
             </div>
 
             <!-- Section formulaire -->
-            <div class="w-full flex flex-col bg-white shadow-md rounded-2xl md:w-2/3 lg:w-1/2 p-8">
-                <h1 class="text-2xl font-bold text-center mb-4">Réinitialisation du mot de passe</h1>
-                <p class="text-center text-gray-600 mb-8">
+            <div class="w-full lg:w-1/2 flex flex-col bg-white shadow-md rounded-2xl p-4 sm:p-6 md:p-8">
+                <h1 class="text-xl sm:text-2xl font-bold text-center mb-4">Réinitialisation du mot de passe</h1>
+                <p class="text-sm sm:text-base text-center text-gray-600 mb-6 sm:mb-8">
                     Un code a été envoyé à <span class="font-semibold">{{ email }}</span>.<br>
                     Veuillez entrer le code et votre nouveau mot de passe.
                 </p>
@@ -182,9 +182,9 @@ export default {
                     {{ errors.general }}
                 </div>
 
-                <form @submit.prevent="handleSubmit" class="space-y-6">
+                <form @submit.prevent="handleSubmit" class="space-y-4 sm:space-y-6">
                     <!-- Champs de saisie OTP -->
-                    <div class="flex justify-between gap-3 mb-8">
+                    <div class="flex justify-between gap-2 sm:gap-3 mb-6 sm:mb-8">
                         <input
                             v-for="(digit, index) in code"
                             :key="index"
@@ -192,7 +192,7 @@ export default {
                             v-model="code[index]"
                             type="text"
                             maxlength="1"
-                            class="w-14 h-14 text-center text-2xl border-2 border-gray-300 rounded-lg focus:border-[#0056D2] focus:ring-2 focus:ring-[#0056D2] outline-none"
+                            class="w-10 h-10 sm:w-14 sm:h-14 text-center text-xl sm:text-2xl border-2 border-gray-300 rounded-lg focus:border-[#0056D2] focus:ring-2 focus:ring-[#0056D2] outline-none"
                             @input="handleChange($event.target.value, index)"
                             @keyup="handleKeyPress(index, $event)"
                         />
@@ -203,7 +203,7 @@ export default {
                             type="password"
                             v-model="new_password"
                             placeholder="Nouveau mot de passe"
-                            class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none w-full"
+                            class="input input-bordered border-gray-500 border-2 rounded-full focus:border-[#FFA600] focus:ring-[#0056D2] focus:ring-2 focus:ring-offset-2 focus:outline-none w-full text-sm sm:text-base p-2 sm:p-3"
                             required
                         />
                     </div>
@@ -212,7 +212,7 @@ export default {
                         <button 
                             type="submit"
                             :disabled="isButtonDisabled"
-                            class="w-full bg-[#0056D2] text-white py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors disabled:bg-[#0056D2]/50 disabled:text-white disabled:cursor-not-allowed btn btn-primary"
+                            class="w-full bg-[#0056D2] text-white py-2 sm:py-3 rounded-full font-semibold text-sm sm:text-base hover:bg-blue-700 transition-colors disabled:bg-[#0056D2]/50 disabled:text-white disabled:cursor-not-allowed btn btn-primary"
                             :class="{ 'loading': loading }"
                         >
                             <i class="fa-solid fa-key"></i>
@@ -220,11 +220,11 @@ export default {
                         </button>
 
                         <div class="text-center">
-                            <p class="text-gray-600 mb-2">Vous n'avez pas reçu de code ?</p>
+                            <p class="text-gray-600 text-sm sm:text-base mb-2">Vous n'avez pas reçu de code ?</p>
                             <button 
                                 @click="handleResendCode"
                                 :disabled="!canResend || loading"
-                                class="text-[#0056D2] font-semibold hover:text-blue-700 btn btn-link"
+                                class="text-[#0056D2] font-semibold text-sm sm:text-base hover:text-blue-700 btn btn-link"
                                 :class="{ 'loading': loading }"
                             >
                                 {{ canResend ? 'Renvoyer le code' : `Renvoyer le code dans ${countdown} secondes` }}

@@ -1,5 +1,15 @@
 <script setup>
 import ImgHero from '../../assets/images/img-hero.webp';
+import { ref, onMounted } from 'vue'
+
+const isLoggedIn = ref(false)
+
+onMounted(() => {
+  const userData = localStorage.getItem('userData')
+  if (userData) {
+    isLoggedIn.value = true
+  }
+})
 </script>
 
 <template>
@@ -27,9 +37,13 @@ import ImgHero from '../../assets/images/img-hero.webp';
           Plongez dans l'univers des technologies grâce à des vidéos éducatives soigneusement sélectionnées. Apprenez, progressez et validez vos compétences avec des certifications adaptées au numérique.
         </p>
         <div>
-          <button class="bg-[#0056D2] px-8 py-5 text-white text-lg rounded-lg font-bold hover:bg-[#0042a3] transition">
-            Explorer les cours
-          </button>
+          <router-link 
+            :to="isLoggedIn ? '/courses' : '/auth#signup'"
+            class="bg-[#0056D2] py-3 lg:py-4 px-6 rounded-xl text-sm lg:text-base text-white hover:bg-[#003F9A] hover:scale-105 transition-transform duration-300"
+          >
+            {{ isLoggedIn ? 'Explorer les cours' : 'S\'inscrire gratuitement' }}
+            <i class="ms-2 fas fa-arrow-right"></i>
+          </router-link>
         </div>
       </div>
 

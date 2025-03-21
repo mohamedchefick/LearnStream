@@ -100,7 +100,7 @@ onMounted(async () => {
             
           <!-- Texte -->
           <h3 class="text-sm font-semibold text-gray-800 flex items-center gap-3">  
-            <img :src="categorie.icon" alt="">  {{ categorie.name }}
+            <img :src="categorie.icon" alt=""> <span style="white-space: pre-line">{{ categorie.name.replace('/', '\n') }}</span>
           </h3>
 
           <!-- Icône -->

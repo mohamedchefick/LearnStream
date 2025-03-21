@@ -22,7 +22,7 @@ const teamMembers = [
     <div class="px-6 md:px-10 lg:px-20 py-10">
         <div class="bg-[#FFA600] rounded-3xl p-8 max-w-8xl mx-auto">
             <div class="text-center mb-10">
-                <h2 class="font-bold text-3xl md:text-4xl text-[#0056D2] mb-4">Notre équipe</h2>
+                <h2 class="font-bold text-3xl md:text-4xl text-[#fff] mb-4">Notre équipe</h2>
                 <p class="font-semibold text-xl md:text-2xl">Découvrez les talents qui font vivre la plateforme</p>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 justify-items-center">
